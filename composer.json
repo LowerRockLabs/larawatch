@@ -1,0 +1,63 @@
+{
+    "name": "larawatch/larawatch",
+    "description": "A tool for monitoring Laravel instances",
+    "keywords": [
+        "lowerrocklabs",
+        "larawatch"
+    ],
+    "homepage": "https://github.dev/LowerRockLabs/larawatch",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Joe McElwee",
+            "email": "joe@lowerrocklabs.com",
+            "homepage": "https://www.lowerrocklabs.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^8.1",
+        "illuminate/bus": "^9.0|^10.0",
+        "lorisleiva/cron-translator": "^0.3.0|^0.4.0",
+        "nesbot/carbon": "^2.63",
+        "nunomaduro/termwind": "^1.10.1"
+    },
+    "require-dev": {
+        "laravel/pint": "*",
+        "mockery/mockery": "^1.4",
+        "nunomaduro/larastan": "*",
+        "orchestra/testbench": "^7.0|^8.0",
+        "pestphp/pest": "^1.20",
+        "pestphp/pest-plugin-laravel": "^1.2",
+        "spatie/phpunit-snapshot-assertions": "^4.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "Larawatch\\Larawatch\\": "src"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/pest",
+        "test-coverage": "vendor/bin/phpunit --coverage-html coverage",
+        "format": "vendor/bin/php-cs-fixer fix --allow-risky=yes",
+        "post-update-cmd": [
+            "@php artisan larawatch:updatepackages"
+        ]
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "composer/package-versions-deprecated": true,
+            "pestphp/pest-plugin": true
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Larawatch\\Larawatch\\LarawatchServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
