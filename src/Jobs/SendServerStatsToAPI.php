@@ -1,6 +1,6 @@
 <?php
 
-namespace Larawatch\Larawatch\Jobs;
+namespace Larawatch\Jobs;
 
 use DateTime;
 use Illuminate\Bus\Queueable;
