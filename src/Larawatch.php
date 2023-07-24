@@ -329,10 +329,10 @@ class Larawatch
         ]);
     }
 
-    public function sendRawData(string $destination, array $data)
+    public function logStats(string $destination, array $data)
     {
-        $statsClient = new StatsClient();
-        return $statsClient->sendRawData($destination, $data);
+        return $this->client->sendRawData($destination, $data);
+
     }
 
 

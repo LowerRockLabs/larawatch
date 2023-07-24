@@ -14,11 +14,9 @@ class StatsClient
 
 
     /**
-     * @param string $login
-     * @param string $project
      * @param ClientInterface|null $client
      */
-    public function __construct(ClientInterface $client = null)
+    public function __construct(string $login, string $project, ClientInterface $client = null)
     {
         $this->client = $client;
     }

@@ -77,6 +77,7 @@ class Client
             return null;
         }
     }
+    
     /**
      * @return \GuzzleHttp\Client
      */

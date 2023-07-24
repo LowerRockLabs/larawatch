@@ -7,7 +7,6 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Http;
 
 class SendDatabaseBusyToAPI
 {
@@ -26,7 +25,13 @@ class SendDatabaseBusyToAPI
 
     public function handle()
     {
-        $response = Http::withToken(config('larawatch.destination_token'))->retry(3, 10 * 1000)->post(config('larawatch.base_url').'dbstatsupdate', ['project_key' => config('larawatch.project_key'), 'event_datetime' => $this->dateTime]);
+        $dataArray = [
+            'event_datetime' => $this->dateTime,
+        ];
+
+        $laraWatch = app('larawatch');
+        $laraWatch->logStats('dbstatsupdate', $dataArray);
+
     }
 
     public function retryUntil(): DateTime

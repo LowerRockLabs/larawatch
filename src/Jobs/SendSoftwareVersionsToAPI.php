@@ -7,7 +7,6 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Http;
 
 class SendSoftwareVersionsToAPI
 {
@@ -27,14 +26,12 @@ class SendSoftwareVersionsToAPI
     public function handle()
     {
 
-        $this->dataArray = [
-            'project_key' => config('larawatch.project_key'),
-            'server_key' => config('larawatch.server_key'),
+        $dataArray = [
             'event_datetime' => $this->dateTime,
             'php_extensions' => get_loaded_extensions(),
         ];
-
-        $response = Http::withToken(config('larawatch.destination_token'))->retry(3, 10 * 1000)->post(config('larawatch.base_url').'', $this->dataArray);
+        $laraWatch = app('larawatch');
+        $laraWatch->logStats('', $dataArray);
     }
 
     public function retryUntil(): DateTime

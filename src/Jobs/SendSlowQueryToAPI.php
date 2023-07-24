@@ -8,7 +8,6 @@ use Illuminate\Database\Events\QueryExecuted;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Http;
 
 class SendSlowQueryToAPI
 {
@@ -30,7 +29,13 @@ class SendSlowQueryToAPI
 
     public function handle()
     {
-        $response = Http::withToken(config('larawatch.destination_token'))->retry(3, 10 * 1000)->post(config('larawatch.base_url').'slowquery', ['project_key' => config('larawatch.project_key'), 'event_datetime' => $this->dateTime, 'slow_query_event' => $this->slowQueryEvent]);
+
+        $dataArray = [
+            'event_datetime' => $this->dateTime,
+            'slow_query_event' => $this->slowQueryEvent
+        ];
+        $laraWatch = app('larawatch');
+        $laraWatch->logStats('slowquery', $dataArray);
     }
 
     public function retryUntil(): DateTime

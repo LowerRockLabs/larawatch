@@ -8,7 +8,6 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Http;
 
 class SendPackageVersionsToAPI
 {
@@ -31,14 +30,13 @@ class SendPackageVersionsToAPI
     {
         $composerInstance = new InstalledVersions;
 
-        $this->dataArray = [
-            'project_key' => config('larawatch.project_key'),
-            'server_key' => config('larawatch.server_key'),
+        $dataArray = [
             'event_datetime' => $this->dateTime,
             'installed_packages_rawdata' => $composerInstance->getAllRawData()[0]['versions'],
         ];
+        $laraWatch = app('larawatch');
+        $laraWatch->logStats('updateinstalledpackages', $dataArray);
 
-        $response = Http::withToken(config('larawatch.destination_token'))->retry(3, 10 * 1000)->post(config('larawatch.base_url').'updateinstalledpackages', $this->dataArray);
     }
 
     public function retryUntil(): DateTime

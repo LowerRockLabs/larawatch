@@ -7,9 +7,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Process;
-use Larawatch\Larawatch;
 
 class SendServerStatsToAPI
 {
@@ -43,17 +41,8 @@ class SendServerStatsToAPI
             'memory_usage' => ($freeMemory / $totalMemory),
         ];
 
-        $laraWatch = app('larawatchStat');
+        $laraWatch = app('larawatch');
         $laraWatch->logStats('serverstats', $dataArray);
-        /*
-        $this->dataArray = [
-            'project_key' => config('larawatch.project_key'),
-            'event_datetime' => $this->dateTime,
-            'cpu_usage' => $cpuPercent,
-            'memory_usage' => ($freeMemory / $totalMemory),
-        ];
-        $response = Http::withToken(config('larawatch.destination_token'))->retry(3, 10 * 1000)->post(config('larawatch.base_url').'serverstats', $this->dataArray);*/
-
 
     }
 

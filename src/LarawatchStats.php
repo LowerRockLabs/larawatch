@@ -16,9 +16,12 @@ class LarawatchStats
     /** @var StatsClient */
     private $statsClient;
 
-    public function __construct(StatsClient $statsClient = null)
+    /**
+     * @param StatsClient $statsClient
+     */
+    public function __construct($statsClient)
     {
-        $this->statsClient = $statsClient ?? new StatsClient(config('larawatch.destination_token', 'destination_token'), config('larawatch.project_key', 'project_key'));
+        $this->statsClient = $statsClient;
     }
 
     public function logStats(string $destination, array $data)
