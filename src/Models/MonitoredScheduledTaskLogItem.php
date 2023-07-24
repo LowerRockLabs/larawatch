@@ -7,9 +7,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\MassPrunable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Larawatch\Support\Concerns\UsesScheduleMonitoringModels;
-use Spatie\ScheduleMonitor\Models\MonitoredScheduledTaskLogItem as SpatieMonitoredScheduledTaskLogItem;
 
-class MonitoredScheduledTaskLogItem extends SpatieMonitoredScheduledTaskLogItem
+class MonitoredScheduledTaskLogItem extends Model
 {
     use UsesScheduleMonitoringModels;
     use HasFactory;

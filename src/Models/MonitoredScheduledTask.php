@@ -15,9 +15,8 @@ use Larawatch\Events\SchedulerEvent;
 use Larawatch\Jobs\SendScheduledJobUpdateToAPI;
 use Larawatch\Support\Concerns\UsesScheduleMonitoringModels;
 use Larawatch\Support\ScheduledTasks\ScheduledTaskFactory;
-use OhDear\PhpSdk\Resources\CronCheck;
 
-class MonitoredScheduledTask extends model
+class MonitoredScheduledTask extends Model
 {
     use UsesScheduleMonitoringModels;
     use HasFactory;
@@ -25,7 +24,7 @@ class MonitoredScheduledTask extends model
     public $guarded = [];
 
     protected $casts = [
-        'registered_on_oh_dear_at' => 'datetime',
+        'registered_on_larawatch_at' => 'datetime',
         'last_pinged_at' => 'datetime',
         'last_started_at' => 'datetime',
         'last_finished_at' => 'datetime',
@@ -72,10 +71,10 @@ class MonitoredScheduledTask extends model
             ->findByName($cronCheck->name);
     }
 
-    public function markAsRegisteredOnOhDear(): self
+    public function markAsRegisteredOnLarawatch(): self
     {
-        if (is_null($this->registered_on_oh_dear_at)) {
-            $this->update(['registered_on_oh_dear_at' => now()]);
+        if (is_null($this->registered_on_larawatch_at)) {
+            $this->update(['registered_on_larawatch_at' => now()]);
         }
 
         return $this;

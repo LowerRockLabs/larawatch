@@ -95,6 +95,10 @@ class LarawatchServiceProvider extends ServiceProvider
                 __DIR__.'/../config/config.php' => config_path('larawatch.php'),
             ], 'larawatch-config');
 
+            $this->publishes([
+                __DIR__.'/../database/migrations' => database_path('migrations'),
+            ], 'larawatch-migrations');
+
         }
     }
 

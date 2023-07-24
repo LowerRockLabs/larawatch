@@ -65,7 +65,7 @@ abstract class Task
         return ! is_null($this->monitoredScheduledTask);
     }
 
-    public function isBeingMonitoredAtOhDear(): bool
+    public function isBeingMonitoredAtLarawatch(): bool
     {
         if (! $this->isBeingMonitored()) {
             return false;
