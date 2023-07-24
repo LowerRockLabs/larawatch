@@ -118,12 +118,6 @@ class LarawatchServiceProvider extends ServiceProvider
             ));
         });
 
-        $this->app->singleton('larawatchStat', function ($app) {
-            return new LarawatchStats(new \Larawatch\Http\StatsClient(
-                config('larawatch.destination_token', 'destination_token'),
-                config('larawatch.project_key', 'project_key')
-            ));
-        });
 
         if ($this->app['log'] instanceof \Illuminate\Log\LogManager) {
             $this->app['log']->extend('larawatch', function ($app, $config) {

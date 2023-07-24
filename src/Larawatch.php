@@ -4,7 +4,6 @@ namespace Larawatch;
 
 use Throwable;
 use Larawatch\Http\Client;
-use Larawatch\Http\StatsClient;
 use Illuminate\Support\Str;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\App;
