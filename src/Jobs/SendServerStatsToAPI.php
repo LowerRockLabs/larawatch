@@ -43,7 +43,7 @@ class SendServerStatsToAPI
             'memory_usage' => ($freeMemory / $totalMemory),
         ];
 
-        $laraWatch = app('larawatch');
+        $laraWatch = app('larawatchStat');
         $laraWatch->sendRawData('serverstats', $dataArray);
         /*
         $this->dataArray = [
