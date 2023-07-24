@@ -16,6 +16,46 @@ use Larawatch\Jobs\SendScheduledJobUpdateToAPI;
 use Larawatch\Support\Concerns\UsesScheduleMonitoringModels;
 use Larawatch\Support\ScheduledTasks\ScheduledTaskFactory;
 
+/**
+ * Larawatch\Models\MonitoredScheduledTask
+ *
+ * @property int $id
+ * @property string $name
+ * @property string|null $type
+ * @property string $cron_expression
+ * @property string|null $timezone
+ * @property string|null $ping_url
+ * @property \Illuminate\Support\Carbon|null $last_started_at
+ * @property \Illuminate\Support\Carbon|null $last_finished_at
+ * @property \Illuminate\Support\Carbon|null $last_failed_at
+ * @property \Illuminate\Support\Carbon|null $last_skipped_at
+ * @property string|null $registered_on_larawatch_at
+ * @property \Illuminate\Support\Carbon|null $last_pinged_at
+ * @property int $grace_time_in_minutes
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Larawatch\Models\MonitoredScheduledTaskLogItem> $logItems
+ * @property-read int|null $log_items_count
+ * @method static \Illuminate\Database\Eloquent\Builder|MonitoredScheduledTask newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|MonitoredScheduledTask newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|MonitoredScheduledTask query()
+ * @method static \Illuminate\Database\Eloquent\Builder|MonitoredScheduledTask whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|MonitoredScheduledTask whereCronExpression($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|MonitoredScheduledTask whereGraceTimeInMinutes($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|MonitoredScheduledTask whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|MonitoredScheduledTask whereLastFailedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|MonitoredScheduledTask whereLastFinishedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|MonitoredScheduledTask whereLastPingedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|MonitoredScheduledTask whereLastSkippedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|MonitoredScheduledTask whereLastStartedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|MonitoredScheduledTask whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|MonitoredScheduledTask wherePingUrl($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|MonitoredScheduledTask whereRegisteredOnLarawatchAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|MonitoredScheduledTask whereTimezone($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|MonitoredScheduledTask whereType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|MonitoredScheduledTask whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
 class MonitoredScheduledTask extends Model
 {
     use UsesScheduleMonitoringModels;

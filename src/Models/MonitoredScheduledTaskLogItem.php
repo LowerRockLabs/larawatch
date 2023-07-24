@@ -9,6 +9,29 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Larawatch\Support\Concerns\UsesScheduleMonitoringModels;
 
+/**
+ * Larawatch\Models\MonitoredScheduledTaskLogItem
+ *
+ * @property int $id
+ * @property int|null $monitored_scheduled_task_id
+ * @property string|null $type
+ * @property array|null $meta
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property string|null $lrl_id
+ * @property-read \Larawatch\Models\MonitoredScheduledTask|null $monitoredScheduledTask
+ * @method static Builder|MonitoredScheduledTaskLogItem newModelQuery()
+ * @method static Builder|MonitoredScheduledTaskLogItem newQuery()
+ * @method static Builder|MonitoredScheduledTaskLogItem query()
+ * @method static Builder|MonitoredScheduledTaskLogItem whereCreatedAt($value)
+ * @method static Builder|MonitoredScheduledTaskLogItem whereId($value)
+ * @method static Builder|MonitoredScheduledTaskLogItem whereLrlId($value)
+ * @method static Builder|MonitoredScheduledTaskLogItem whereMeta($value)
+ * @method static Builder|MonitoredScheduledTaskLogItem whereMonitoredScheduledTaskId($value)
+ * @method static Builder|MonitoredScheduledTaskLogItem whereType($value)
+ * @method static Builder|MonitoredScheduledTaskLogItem whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
 class MonitoredScheduledTaskLogItem extends Model
 {
     use UsesScheduleMonitoringModels;

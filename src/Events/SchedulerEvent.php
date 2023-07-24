@@ -8,6 +8,7 @@ use Illuminate\Console\Scheduling\EventMutex;
 class SchedulerEvent extends Event
 {
     public string $lrl_id;
+    public string $monitorName;
 
     /**
      * Create a new event instance.
