@@ -2,10 +2,10 @@
 
 namespace Larawatch\Logger;
 
-use Throwable;
-use Monolog\Logger;
 use Larawatch\Larawatch;
 use Monolog\Handler\AbstractProcessingHandler;
+use Monolog\Logger;
+use Throwable;
 
 class LarawatchHandler extends AbstractProcessingHandler
 {
@@ -13,9 +13,7 @@ class LarawatchHandler extends AbstractProcessingHandler
     protected $laraWatch;
 
     /**
-     * @param Larawatch $laraWatch
-     * @param int $level
-     * @param bool $bubble
+     * @param  int  $level
      */
     public function __construct(Larawatch $laraWatch, $level = Logger::ERROR, bool $bubble = true)
     {
@@ -25,7 +23,7 @@ class LarawatchHandler extends AbstractProcessingHandler
     }
 
     /**
-     * @param array $record
+     * @param  array  $record
      */
     protected function write($record): void
     {

@@ -3,7 +3,6 @@
 namespace Larawatch\Commands;
 
 use Illuminate\Console\Command;
-use Larawatch\Models\MonitoredScheduledTask;
 use Larawatch\Support\Concerns\UsesScheduleMonitoringModels;
 use Larawatch\Support\ScheduledTasks\ScheduledTasks;
 use Larawatch\Support\ScheduledTasks\Tasks\Task;
@@ -59,5 +58,4 @@ class SyncCommand extends Command
 
         return $this;
     }
-
 }

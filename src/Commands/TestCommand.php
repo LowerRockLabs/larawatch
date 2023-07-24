@@ -30,9 +30,9 @@ class TestCommand extends Command
             }
 
             if (in_array(config('app.env'), config('larawatch.environments'))) {
-                $this->info('✓ [Larawatch] Correct environment found (' . config('app.env') . ')');
+                $this->info('✓ [Larawatch] Correct environment found ('.config('app.env').')');
             } else {
-                $this->error('✗ [Larawatch] Environment (' . config('app.env') . ') not allowed to send errors to Larawatch, set this in your config');
+                $this->error('✗ [Larawatch] Environment ('.config('app.env').') not allowed to send errors to Larawatch, set this in your config');
             }
 
             $response = $larawatch->handle(

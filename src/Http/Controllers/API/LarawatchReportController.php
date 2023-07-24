@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 class LarawatchReportController
 {
     /**
-     * @param Request $request
      * @return \Illuminate\Http\Response|\Illuminate\Contracts\Routing\ResponseFactory
      */
     public function report(Request $request)

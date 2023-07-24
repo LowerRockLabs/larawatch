@@ -2,8 +2,8 @@
 
 namespace Larawatch\Facades;
 
-use Larawatch\Http\Client;
 use Larawatch\Fakes\LarawatchFake;
+use Larawatch\Http\Client;
 
 /**
  * @method static void assertSent($throwable, $callback = null)

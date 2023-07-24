@@ -32,7 +32,7 @@ class SendSlowQueryToAPI
 
         $dataArray = [
             'event_datetime' => $this->dateTime,
-            'slow_query_event' => $this->slowQueryEvent
+            'slow_query_event' => $this->slowQueryEvent,
         ];
         $laraWatch = app('larawatch');
         $laraWatch->logStats('slowquery', $dataArray);

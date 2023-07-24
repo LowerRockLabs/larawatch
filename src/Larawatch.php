@@ -2,14 +2,14 @@
 
 namespace Larawatch;
 
-use Throwable;
-use Larawatch\Http\Client;
-use Illuminate\Support\Str;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Str;
+use Larawatch\Http\Client;
+use Throwable;
 
 class Larawatch
 {
@@ -22,9 +22,6 @@ class Larawatch
     /** @var null|string */
     private $lastExceptionId;
 
-    /**
-     * @param Client $client
-     */
     public function __construct(Client $client)
     {
         $this->client = $client;
@@ -35,8 +32,7 @@ class Larawatch
     }
 
     /**
-     * @param Throwable $exception
-     * @param string $fileType
+     * @param  string  $fileType
      * @return bool|mixed
      */
     public function handle(Throwable $exception, $fileType = 'php', array $customData = [])
@@ -78,7 +74,7 @@ class Larawatch
 
                 $index = $currentLine - 1;
 
-                if (!array_key_exists($index, $lines)) {
+                if (! array_key_exists($index, $lines)) {
                     continue;
                 }
 
@@ -93,7 +89,7 @@ class Larawatch
 
         $rawResponse = $this->logError($data);
 
-        if (!$rawResponse) {
+        if (! $rawResponse) {
             return false;
         }
 
@@ -126,9 +122,6 @@ class Larawatch
         return true;
     }
 
-    /**
-     * @param string|null $id
-     */
     private function setLastExceptionId(?string $id)
     {
         $this->lastExceptionId = $id;
@@ -136,6 +129,7 @@ class Larawatch
 
     /**
      * Get the last exception id given to us by the larawatch API.
+     *
      * @return string|null
      */
     public function getLastExceptionId()
@@ -144,7 +138,6 @@ class Larawatch
     }
 
     /**
-     * @param Throwable $exception
      * @return array
      */
     public function getExceptionData(Throwable $exception)
@@ -173,7 +166,7 @@ class Larawatch
             'COOKIE' => $this->filterVariables(Request::cookie()),
             'SESSION' => $this->filterVariables(Request::hasSession() ? Session::all() : []),
             'HEADERS' => $this->filterVariables(Request::header()),
-            'PARAMETERS' => $this->filterVariables($this->filterParameterValues(Request::all()))
+            'PARAMETERS' => $this->filterVariables($this->filterParameterValues(Request::all())),
         ];
 
         $data['storage'] = array_filter($data['storage']);
@@ -211,7 +204,7 @@ class Larawatch
     }
 
     /**
-     * @param array $parameters
+     * @param  array  $parameters
      * @return array
      */
     public function filterParameterValues($parameters)
@@ -228,7 +221,7 @@ class Larawatch
     /**
      * Determines whether the given parameter value should be filtered.
      *
-     * @param mixed $value
+     * @param  mixed  $value
      * @return bool
      */
     public function shouldParameterValueBeFiltered($value)
@@ -237,7 +230,6 @@ class Larawatch
     }
 
     /**
-     * @param $variables
      * @return array
      */
     public function filterVariables($variables)
@@ -263,9 +255,6 @@ class Larawatch
     /**
      * Gets information from the line.
      *
-     * @param $lines
-     * @param $line
-     * @param $i
      *
      * @return array|void
      */
@@ -275,7 +264,7 @@ class Larawatch
 
         $index = $currentLine - 1;
 
-        if (!array_key_exists($index, $lines)) {
+        if (! array_key_exists($index, $lines)) {
             return;
         }
 
@@ -286,7 +275,6 @@ class Larawatch
     }
 
     /**
-     * @param $exceptionClass
      * @return bool
      */
     public function isSkipException($exceptionClass)
@@ -295,7 +283,6 @@ class Larawatch
     }
 
     /**
-     * @param array $data
      * @return bool
      */
     public function isSleepingException(array $data)
@@ -308,16 +295,14 @@ class Larawatch
     }
 
     /**
-     * @param array $data
      * @return string
      */
     private function createExceptionString(array $data)
     {
-        return 'larawatch.' . Str::slug($data['host'] . '_' . $data['method'] . '_' . $data['exception'] . '_' . $data['line'] . '_' . $data['file'] . '_' . $data['class']);
+        return 'larawatch.'.Str::slug($data['host'].'_'.$data['method'].'_'.$data['exception'].'_'.$data['line'].'_'.$data['file'].'_'.$data['class']);
     }
 
     /**
-     * @param $exception
      * @return \GuzzleHttp\Promise\PromiseInterface|\Psr\Http\Message\ResponseInterface|null
      */
     private function logError($exception)
@@ -333,7 +318,6 @@ class Larawatch
         return $this->client->sendRawData($destination, $data);
 
     }
-
 
     /**
      * @return array|null
@@ -353,11 +337,9 @@ class Larawatch
             }
         }
 
-        return null;
     }
 
     /**
-     * @param array $data
      * @return bool
      */
     public function addExceptionToSleep(array $data)

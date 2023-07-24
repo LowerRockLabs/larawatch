@@ -118,7 +118,6 @@ class LarawatchServiceProvider extends ServiceProvider
             ));
         });
 
-
         if ($this->app['log'] instanceof \Illuminate\Log\LogManager) {
             $this->app['log']->extend('larawatch', function ($app, $config) {
                 $handler = new \Larawatch\Logger\LarawatchHandler(

@@ -15,11 +15,6 @@ class Client
     /** @var string */
     protected $project;
 
-    /**
-     * @param string $login
-     * @param string $project
-     * @param ClientInterface|null $client
-     */
     public function __construct(string $login, string $project, ClientInterface $client = null)
     {
         $this->login = $login;
@@ -28,8 +23,9 @@ class Client
     }
 
     /**
-     * @param array $exception
+     * @param  array  $exception
      * @return \GuzzleHttp\Promise\PromiseInterface|\Psr\Http\Message\ResponseInterface|null
+     *
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function report($exception)
@@ -40,7 +36,7 @@ class Client
                     'Authorization' => 'Bearer '.$this->login,
                     'Content-Type' => 'application/json',
                     'Accept' => 'application/json',
-                    'User-Agent' => 'Larawatch-Package'
+                    'User-Agent' => 'Larawatch-Package',
                 ],
                 'json' => array_merge([
                     'project' => $this->project,
@@ -51,19 +47,19 @@ class Client
         } catch (\GuzzleHttp\Exception\RequestException $e) {
             return $e->getResponse();
         } catch (\Exception $e) {
-            return null;
+            return;
         }
     }
 
     public function sendRawData(string $destination, array $data)
     {
         try {
-            return $this->getGuzzleHttpClient()->request('POST', config('larawatch.base_url') . $destination, [
+            return $this->getGuzzleHttpClient()->request('POST', config('larawatch.base_url').$destination, [
                 'headers' => [
                     'Authorization' => 'Bearer '.config('larawatch.destination_token'),
                     'Content-Type' => 'application/json',
                     'Accept' => 'application/json',
-                    'User-Agent' => 'Larawatch-Package'
+                    'User-Agent' => 'Larawatch-Package',
                 ],
                 'json' => array_merge([
                     'project_key' => config('larawatch.project_key'),
@@ -74,10 +70,10 @@ class Client
         } catch (\GuzzleHttp\Exception\RequestException $e) {
             return $e->getResponse();
         } catch (\Exception $e) {
-            return null;
+            return;
         }
     }
-    
+
     /**
      * @return \GuzzleHttp\Client
      */
@@ -93,7 +89,6 @@ class Client
     }
 
     /**
-     * @param ClientInterface $client
      * @return $this
      */
     public function setGuzzleHttpClient(ClientInterface $client)

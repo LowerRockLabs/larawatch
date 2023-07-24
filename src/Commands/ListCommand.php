@@ -26,5 +26,4 @@ class ListCommand extends Command
             'dateFormat' => $dateFormat,
         ]));
     }
-
 }
