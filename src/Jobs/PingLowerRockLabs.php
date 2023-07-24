@@ -1,6 +1,6 @@
 <?php
 
-namespace Larawatch\Larawatch\Jobs;
+namespace Larawatch\Jobs;
 
 use DateTime;
 use Illuminate\Bus\Queueable;
@@ -9,8 +9,8 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Http;
-use Larawatch\Larawatch\Models\MonitoredScheduledTaskLogItem;
-use Larawatch\Larawatch\Support\LowerRockLabs\LowerRockLabsPayloadFactory;
+use Larawatch\Models\MonitoredScheduledTaskLogItem;
+use Larawatch\Support\LowerRockLabs\LowerRockLabsPayloadFactory;
 
 class PingLowerRockLabs implements ShouldQueue
 {

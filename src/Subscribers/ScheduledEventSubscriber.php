@@ -1,9 +1,9 @@
 <?php
 
-namespace Larawatch\Larawatch\Subscribers;
+namespace Larawatch\Subscribers;
 
 use Illuminate\Events\Dispatcher;
-use Larawatch\Larawatch\Support\Concerns\UsesScheduleMonitoringModels;
+use Larawatch\Support\Concerns\UsesScheduleMonitoringModels;
 
 class ScheduledEventSubscriber
 {

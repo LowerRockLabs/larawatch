@@ -1,12 +1,12 @@
 <?php
 
-namespace Larawatch\Larawatch\Commands;
+namespace Larawatch\Commands;
 
 use Illuminate\Console\Command;
-use Larawatch\Larawatch\Models\MonitoredScheduledTask;
-use Larawatch\Larawatch\Support\Concerns\UsesScheduleMonitoringModels;
-use Larawatch\Larawatch\Support\ScheduledTasks\ScheduledTasks;
-use Larawatch\Larawatch\Support\ScheduledTasks\Tasks\Task;
+use Larawatch\Models\MonitoredScheduledTask;
+use Larawatch\Support\Concerns\UsesScheduleMonitoringModels;
+use Larawatch\Support\ScheduledTasks\ScheduledTasks;
+use Larawatch\Support\ScheduledTasks\Tasks\Task;
 use function Termwind\render;
 
 class SyncCommand extends Command

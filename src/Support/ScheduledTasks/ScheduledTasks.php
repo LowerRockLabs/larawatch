@@ -1,13 +1,13 @@
 <?php
 
-namespace Larawatch\Larawatch\Support\ScheduledTasks;
+namespace Larawatch\Support\ScheduledTasks;
 
 use Illuminate\Console\Events\ScheduledTaskStarting;
 use Illuminate\Console\Scheduling\Event;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Support\Collection;
-use Larawatch\Larawatch\Events\SchedulerEvent;
-use Larawatch\Larawatch\Support\ScheduledTasks\Tasks\Task;
+use Larawatch\Events\SchedulerEvent;
+use Larawatch\Support\ScheduledTasks\Tasks\Task;
 
 class ScheduledTasks
 {

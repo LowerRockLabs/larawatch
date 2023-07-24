@@ -1,6 +1,6 @@
 <?php
 
-namespace Larawatch\Larawatch\Exceptions;
+namespace Larawatch\Exceptions;
 
 use Exception;
 

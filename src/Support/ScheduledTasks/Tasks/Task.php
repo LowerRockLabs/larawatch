@@ -1,6 +1,6 @@
 <?php
 
-namespace Larawatch\Larawatch\Support\ScheduledTasks\Tasks;
+namespace Larawatch\Support\ScheduledTasks\Tasks;
 
 use Carbon\CarbonInterface;
 use Cron\CronExpression;
@@ -10,9 +10,9 @@ use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Str;
 use Lorisleiva\CronTranslator\CronParsingException;
 use Lorisleiva\CronTranslator\CronTranslator;
-use Larawatch\Larawatch\Events\SchedulerEvent;
-use Larawatch\Larawatch\Models\MonitoredScheduledTask;
-use Larawatch\Larawatch\Support\Concerns\UsesScheduleMonitoringModels;
+use Larawatch\Events\SchedulerEvent;
+use Larawatch\Models\MonitoredScheduledTask;
+use Larawatch\Support\Concerns\UsesScheduleMonitoringModels;
 
 abstract class Task
 {

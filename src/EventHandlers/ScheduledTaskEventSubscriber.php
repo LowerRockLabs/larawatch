@@ -1,6 +1,6 @@
 <?php
 
-namespace Larawatch\Larawatch\EventHandlers;
+namespace Larawatch\EventHandlers;
 
 use Illuminate\Console\Events\ScheduledTaskFailed;
 use Illuminate\Console\Events\ScheduledTaskFinished;
@@ -8,7 +8,7 @@ use Illuminate\Console\Events\ScheduledTaskSkipped;
 use Illuminate\Console\Events\ScheduledTaskStarting;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Support\Facades\Log;
-use Larawatch\Larawatch\Support\Concerns\UsesScheduleMonitoringModels;
+use Larawatch\Support\Concerns\UsesScheduleMonitoringModels;
 
 class ScheduledTaskEventSubscriber
 {

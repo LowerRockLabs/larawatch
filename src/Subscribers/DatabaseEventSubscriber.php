@@ -1,10 +1,10 @@
 <?php
 
-namespace Larawatch\Larawatch\Subscribers;
+namespace Larawatch\Subscribers;
 
 use Illuminate\Database\Events\DatabaseBusy;
 use Illuminate\Events\Dispatcher;
-use Larawatch\Larawatch\Jobs\SendDatabaseBusyToAPI;
+use Larawatch\Jobs\SendDatabaseBusyToAPI;
 
 class DatabaseEventSubscriber
 {

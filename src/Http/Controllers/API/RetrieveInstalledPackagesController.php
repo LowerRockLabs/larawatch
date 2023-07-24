@@ -1,6 +1,6 @@
 <?php
 
-namespace Larawatch\Larawatch\Http\Controllers\API;
+namespace Larawatch\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Composer\InstalledVersions;

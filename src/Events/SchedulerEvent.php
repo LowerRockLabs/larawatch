@@ -1,6 +1,6 @@
 <?php
 
-namespace Larawatch\Larawatch\Events;
+namespace Larawatch\Events;
 
 use Illuminate\Console\Scheduling\Event;
 use Illuminate\Console\Scheduling\EventMutex;

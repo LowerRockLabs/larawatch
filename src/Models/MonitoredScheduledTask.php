@@ -1,6 +1,6 @@
 <?php
 
-namespace Larawatch\Larawatch\Models;
+namespace Larawatch\Models;
 
 use Illuminate\Console\Events\ScheduledTaskFailed;
 use Illuminate\Console\Events\ScheduledTaskFinished;
@@ -11,10 +11,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
-use Larawatch\Larawatch\Events\SchedulerEvent;
-use Larawatch\Larawatch\Jobs\SendScheduledJobUpdateToAPI;
-use Larawatch\Larawatch\Support\Concerns\UsesScheduleMonitoringModels;
-use Larawatch\Larawatch\Support\ScheduledTasks\ScheduledTaskFactory;
+use Larawatch\Events\SchedulerEvent;
+use Larawatch\Jobs\SendScheduledJobUpdateToAPI;
+use Larawatch\Support\Concerns\UsesScheduleMonitoringModels;
+use Larawatch\Support\ScheduledTasks\ScheduledTaskFactory;
 use OhDear\PhpSdk\Resources\CronCheck;
 
 class MonitoredScheduledTask extends model

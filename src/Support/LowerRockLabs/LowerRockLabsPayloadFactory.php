@@ -1,12 +1,12 @@
 <?php
 
-namespace Larawatch\Larawatch\Support\LowerRockLabs;
+namespace Larawatch\Support\LowerRockLabs;
 
-use Larawatch\Larawatch\Models\MonitoredScheduledTaskLogItem;
-use Larawatch\Larawatch\Support\LowerRockLabs\Payloads\FailedPayload;
-use Larawatch\Larawatch\Support\LowerRockLabs\Payloads\FinishedPayload;
-use Larawatch\Larawatch\Support\LowerRockLabs\Payloads\Payload;
-use Larawatch\Larawatch\Support\LowerRockLabs\Payloads\StartingPayload;
+use Larawatch\Models\MonitoredScheduledTaskLogItem;
+use Larawatch\Support\LowerRockLabs\Payloads\FailedPayload;
+use Larawatch\Support\LowerRockLabs\Payloads\FinishedPayload;
+use Larawatch\Support\LowerRockLabs\Payloads\Payload;
+use Larawatch\Support\LowerRockLabs\Payloads\StartingPayload;
 
 class LowerRockLabsPayloadFactory
 {

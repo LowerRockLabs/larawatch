@@ -1,11 +1,11 @@
 <?php
 
-namespace Larawatch\Larawatch\Providers;
+namespace Larawatch\Providers;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
-use Larawatch\Larawatch\Jobs\SendPackageVersionsToAPI;
-use Larawatch\Larawatch\Jobs\SendServerStatsToAPI;
+use Larawatch\Jobs\SendPackageVersionsToAPI;
+use Larawatch\Jobs\SendServerStatsToAPI;
 
 class ScheduleServiceProvider extends ServiceProvider
 {

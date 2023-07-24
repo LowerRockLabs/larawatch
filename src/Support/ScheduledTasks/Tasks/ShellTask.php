@@ -1,12 +1,12 @@
 <?php
 
-namespace Larawatch\Larawatch\Support\ScheduledTasks\Tasks;
+namespace Larawatch\Support\ScheduledTasks\Tasks;
 
 use Illuminate\Console\Events\ScheduledTaskStarting;
 use Illuminate\Console\Scheduling\CallbackEvent;
 use Illuminate\Console\Scheduling\Event;
 use Illuminate\Support\Str;
-use Larawatch\Larawatch\Events\SchedulerEvent;
+use Larawatch\Events\SchedulerEvent;
 
 class ShellTask extends Task
 {

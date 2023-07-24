@@ -1,6 +1,6 @@
 <?php
 
-namespace Larawatch\Larawatch\Jobs;
+namespace Larawatch\Jobs;
 
 use Composer\InstalledVersions;
 use DateTime;

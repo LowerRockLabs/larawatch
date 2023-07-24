@@ -1,10 +1,10 @@
 <?php
 
-namespace Larawatch\Larawatch\Providers;
+namespace Larawatch\Providers;
 
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
-use Larawatch\Larawatch\Subscribers\DatabaseEventSubscriber;
-use Larawatch\Larawatch\Subscribers\ScheduledEventSubscriber;
+use Larawatch\Subscribers\DatabaseEventSubscriber;
+use Larawatch\Subscribers\ScheduledEventSubscriber;
 
 class EventServiceProvider extends ServiceProvider
 {

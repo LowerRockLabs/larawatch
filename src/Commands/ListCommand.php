@@ -1,9 +1,9 @@
 <?php
 
-namespace Larawatch\Larawatch\Commands;
+namespace Larawatch\Commands;
 
 use Illuminate\Console\Command;
-use Larawatch\Larawatch\Support\ScheduledTasks\ScheduledTasks;
+use Larawatch\Support\ScheduledTasks\ScheduledTasks;
 use function Termwind\render;
 use function Termwind\style;
 

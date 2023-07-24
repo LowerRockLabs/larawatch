@@ -1,6 +1,6 @@
 <?php
 
-namespace Larawatch\Larawatch;
+namespace Larawatch;
 
 use Illuminate\Console\Events\CommandStarting;
 use Illuminate\Database\Events\QueryExecuted;
@@ -8,16 +8,18 @@ use Illuminate\Foundation\Console\AboutCommand;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
-use Larawatch\Larawatch\Commands\ListCommand;
-use Larawatch\Larawatch\Commands\SendPackageDetailsCommand;
-use Larawatch\Larawatch\Commands\SyncCommand;
-use Larawatch\Larawatch\EventHandlers\BackgroundCommandListener;
-use Larawatch\Larawatch\Events\SchedulerEvent;
-use Larawatch\Larawatch\Jobs\SendSlowQueryToAPI;
-use Larawatch\Larawatch\Models\MonitoredScheduledTask;
-use Larawatch\Larawatch\Models\MonitoredScheduledTaskLogItem;
-use Larawatch\Larawatch\Providers\EventServiceProvider;
-use Larawatch\Larawatch\Providers\ScheduleServiceProvider;
+use Larawatch\Commands\ListCommand;
+use Larawatch\Commands\SendPackageDetailsCommand;
+use Larawatch\Commands\SyncCommand;
+use Larawatch\Commands\TestCommand;
+use Larawatch\EventHandlers\BackgroundCommandListener;
+use Larawatch\Events\SchedulerEvent;
+use Larawatch\Jobs\SendSlowQueryToAPI;
+use Larawatch\Models\MonitoredScheduledTask;
+use Larawatch\Models\MonitoredScheduledTaskLogItem;
+use Larawatch\Providers\EventServiceProvider;
+use Larawatch\Providers\ScheduleServiceProvider;
+use Monolog\Logger;
 
 class LarawatchServiceProvider extends ServiceProvider
 {
@@ -45,6 +47,11 @@ class LarawatchServiceProvider extends ServiceProvider
                     SendSlowQueryToAPI::dispatch($event);
                 });
             }
+        }
+
+        if (class_exists(\Illuminate\Foundation\AliasLoader::class)) {
+            $loader = \Illuminate\Foundation\AliasLoader::getInstance();
+            $loader->alias('larawatch', 'Larawatch\Facade');
         }
 
         SchedulerEvent::macro('monitorName', function (string $monitorName) {
@@ -81,6 +88,7 @@ class LarawatchServiceProvider extends ServiceProvider
                 ListCommand::class,
                 SyncCommand::class,
                 SendPackageDetailsCommand::class,
+                TestCommand::class,
             ]);
 
             $this->publishes([
@@ -101,8 +109,25 @@ class LarawatchServiceProvider extends ServiceProvider
         Event::listen(CommandStarting::class, BackgroundCommandListener::class);
         $this->app->singleton(MonitoredScheduledTask::class);
         $this->app->singleton(MonitoredScheduledTaskLogItem::class);
+        $this->mergeConfigFrom(__DIR__.'/../config/config.php', 'larawatch');
+
+        $this->app->singleton('larawatch', function ($app) {
+            return new Larawatch(new \Larawatch\Http\Client(
+                config('larawatch.login_key', 'login_key'),
+                config('larawatch.project_key', 'project_key')
+            ));
+        });
+
+        if ($this->app['log'] instanceof \Illuminate\Log\LogManager) {
+            $this->app['log']->extend('larawatch', function ($app, $config) {
+                $handler = new \Larawatch\Logger\LarawatchHandler(
+                    $app['larawatch']
+                );
+
+                return new Logger('larawatch', [$handler]);
+            });
+        }
 
         //$this->app->register(EventServiceProvider::class);
-        $this->mergeConfigFrom(__DIR__.'/../config/config.php', 'larawatch');
     }
 }

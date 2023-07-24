@@ -1,8 +1,8 @@
 <?php
 
-namespace Larawatch\Larawatch\Support\LowerRockLabs\Payloads;
+namespace Larawatch\Support\LowerRockLabs\Payloads;
 
-use Larawatch\Larawatch\Models\MonitoredScheduledTaskLogItem;
+use Larawatch\Models\MonitoredScheduledTaskLogItem;
 
 abstract class Payload
 {

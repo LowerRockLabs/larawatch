@@ -37,7 +37,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Larawatch\\Larawatch\\": "src"
+            "Larawatch\\": "src"
         }
     },
     "scripts": {
@@ -58,7 +58,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Larawatch\\Larawatch\\LarawatchServiceProvider"
+                "Larawatch\\LarawatchServiceProvider"
             ]
         }
     },

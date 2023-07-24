@@ -1,9 +1,9 @@
 <?php
 
-namespace Larawatch\Larawatch\Commands;
+namespace Larawatch\Commands;
 
 use Illuminate\Console\Command;
-use Larawatch\Larawatch\Jobs\SendPackageVersionsToAPI;
+use Larawatch\Jobs\SendPackageVersionsToAPI;
 
 class SendPackageDetailsCommand extends Command
 {

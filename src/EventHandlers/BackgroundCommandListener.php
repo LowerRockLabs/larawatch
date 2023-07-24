@@ -1,12 +1,12 @@
 <?php
 
-namespace Larawatch\Larawatch\EventHandlers;
+namespace Larawatch\EventHandlers;
 
 use Illuminate\Console\Events\CommandStarting;
 use Illuminate\Console\Events\ScheduledTaskFinished;
 use Illuminate\Console\Scheduling\Schedule;
-use Larawatch\Larawatch\Events\SchedulerEvent as Event;
-use Larawatch\Larawatch\Support\Concerns\UsesScheduleMonitoringModels;
+use Larawatch\Events\SchedulerEvent as Event;
+use Larawatch\Support\Concerns\UsesScheduleMonitoringModels;
 
 class BackgroundCommandListener
 {

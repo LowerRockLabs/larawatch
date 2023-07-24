@@ -1,12 +1,12 @@
 <?php
 
-namespace Larawatch\Larawatch\Models;
+namespace Larawatch\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\MassPrunable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Larawatch\Larawatch\Support\Concerns\UsesScheduleMonitoringModels;
+use Larawatch\Support\Concerns\UsesScheduleMonitoringModels;
 use Spatie\ScheduleMonitor\Models\MonitoredScheduledTaskLogItem as SpatieMonitoredScheduledTaskLogItem;
 
 class MonitoredScheduledTaskLogItem extends SpatieMonitoredScheduledTaskLogItem

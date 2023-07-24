@@ -1,9 +1,9 @@
 <?php
 
-namespace Larawatch\Larawatch\Support\LowerRockLabs\Payloads;
+namespace Larawatch\Support\LowerRockLabs\Payloads;
 
 use Illuminate\Support\Arr;
-use Larawatch\Larawatch\Models\MonitoredScheduledTaskLogItem;
+use Larawatch\Models\MonitoredScheduledTaskLogItem;
 
 class FailedPayload extends Payload
 {

@@ -1,10 +1,10 @@
 <?php
 
-namespace Larawatch\Larawatch\Support\Concerns;
+namespace Larawatch\Support\Concerns;
 
 use function app;
-use Larawatch\Larawatch\Models\MonitoredScheduledTask;
-use Larawatch\Larawatch\Models\MonitoredScheduledTaskLogItem;
+use Larawatch\Models\MonitoredScheduledTask;
+use Larawatch\Models\MonitoredScheduledTaskLogItem;
 
 trait UsesScheduleMonitoringModels
 {

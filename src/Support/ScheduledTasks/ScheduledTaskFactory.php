@@ -1,15 +1,15 @@
 <?php
 
-namespace Larawatch\Larawatch\Support\ScheduledTasks;
+namespace Larawatch\Support\ScheduledTasks;
 
 use Illuminate\Console\Events\ScheduledTaskStarting;
 use Illuminate\Console\Scheduling\Event;
-use Larawatch\Larawatch\Events\SchedulerEvent;
-use Larawatch\Larawatch\Support\ScheduledTasks\Tasks\ClosureTask;
-use Larawatch\Larawatch\Support\ScheduledTasks\Tasks\CommandTask;
-use Larawatch\Larawatch\Support\ScheduledTasks\Tasks\JobTask;
-use Larawatch\Larawatch\Support\ScheduledTasks\Tasks\ShellTask;
-use Larawatch\Larawatch\Support\ScheduledTasks\Tasks\Task;
+use Larawatch\Events\SchedulerEvent;
+use Larawatch\Support\ScheduledTasks\Tasks\ClosureTask;
+use Larawatch\Support\ScheduledTasks\Tasks\CommandTask;
+use Larawatch\Support\ScheduledTasks\Tasks\JobTask;
+use Larawatch\Support\ScheduledTasks\Tasks\ShellTask;
+use Larawatch\Support\ScheduledTasks\Tasks\Task;
 
 class ScheduledTaskFactory
 {
