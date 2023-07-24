@@ -328,6 +328,12 @@ class Larawatch
         ]);
     }
 
+    public function sendRawData(string $destination, array $data)
+    {
+        return $this->client->sendRawData($destination, $data);
+    }
+
+
     /**
      * @return array|null
      */
