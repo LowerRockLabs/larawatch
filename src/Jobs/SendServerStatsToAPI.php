@@ -44,7 +44,7 @@ class SendServerStatsToAPI
         ];
 
         $laraWatch = app('larawatchStat');
-        $laraWatch->sendRawData('serverstats', $dataArray);
+        $laraWatch->logStats('serverstats', $dataArray);
         /*
         $this->dataArray = [
             'project_key' => config('larawatch.project_key'),
