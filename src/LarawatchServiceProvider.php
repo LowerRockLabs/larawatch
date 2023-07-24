@@ -113,7 +113,7 @@ class LarawatchServiceProvider extends ServiceProvider
 
         $this->app->singleton('larawatch', function ($app) {
             return new Larawatch(new \Larawatch\Http\Client(
-                config('larawatch.login_key', 'login_key'),
+                config('larawatch.destination_token', 'destination_token'),
                 config('larawatch.project_key', 'project_key')
             ));
         });

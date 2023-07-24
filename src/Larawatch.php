@@ -4,6 +4,7 @@ namespace Larawatch;
 
 use Throwable;
 use Larawatch\Http\Client;
+use Larawatch\Http\StatsClient;
 use Illuminate\Support\Str;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\App;
@@ -330,7 +331,8 @@ class Larawatch
 
     public function sendRawData(string $destination, array $data)
     {
-        return $this->client->sendRawData($destination, $data);
+        $statsClient = new StatsClient();
+        return $statsClient->sendRawData($destination, $data);
     }
 
 
