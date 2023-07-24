@@ -1,6 +1,6 @@
 {
     "name": "larawatch/larawatch",
-    "description": "A tool for monitoring Laravel instances",
+    "description": "A tool for monitoring Laravel instances - currently in pre-alpha",
     "keywords": [
         "lowerrocklabs",
         "larawatch",
