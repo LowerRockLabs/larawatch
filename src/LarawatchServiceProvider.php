@@ -11,7 +11,6 @@ use Illuminate\Support\ServiceProvider;
 use Larawatch\Larawatch\Commands\ListCommand;
 use Larawatch\Larawatch\Commands\SendPackageDetailsCommand;
 use Larawatch\Larawatch\Commands\SyncCommand;
-use Larawatch\Larawatch\Commands\VerifyCommand;
 use Larawatch\Larawatch\EventHandlers\BackgroundCommandListener;
 use Larawatch\Larawatch\Events\SchedulerEvent;
 use Larawatch\Larawatch\Jobs\SendSlowQueryToAPI;
@@ -38,7 +37,7 @@ class LarawatchServiceProvider extends ServiceProvider
         $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
 
         // $this->loadTranslationsFrom(__DIR__ . '/../resources/lang', 'laravel-advanced-authentication');
-        AboutCommand::add('Larawatch', fn () => ['Version' => '0.0.5']);
+        AboutCommand::add('Larawatch', fn () => ['Version' => '1.0.0']);
 
         if (config('larawatch.db_monitoring_enabled')) {
             if (config('larawatch.db_slowquery_enabled')) {
@@ -82,7 +81,6 @@ class LarawatchServiceProvider extends ServiceProvider
                 ListCommand::class,
                 SyncCommand::class,
                 SendPackageDetailsCommand::class,
-                VerifyCommand::class,
             ]);
 
             $this->publishes([

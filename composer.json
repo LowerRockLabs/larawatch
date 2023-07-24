@@ -3,9 +3,13 @@
     "description": "A tool for monitoring Laravel instances",
     "keywords": [
         "lowerrocklabs",
-        "larawatch"
+        "larawatch",
+        "laravel",
+        "monitoring",
+        "errors",
+        "security"
     ],
-    "homepage": "https://github.dev/LowerRockLabs/larawatch",
+    "homepage": "https://github.com/lowerrocklabs/larawatch",
     "license": "MIT",
     "authors": [
         {
