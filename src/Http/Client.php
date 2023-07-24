@@ -55,6 +55,28 @@ class Client
         }
     }
 
+    public function sendRawData(string $destination, array $data)
+    {
+        try {
+            return $this->getGuzzleHttpClient()->request('POST', config('larawatch.base_url') . $destination, [
+                'headers' => [
+                    'Authorization' => 'Bearer '.config('larawatch.destination_token'),
+                    'Content-Type' => 'application/json',
+                    'Accept' => 'application/json',
+                    'User-Agent' => 'Larawatch-Package'
+                ],
+                'json' => array_merge([
+                    'project_key' => config('larawatch.project_key'),
+                    'server_key' => config('larawatch.server_key'),
+                ], $data),
+                'verify' => config('larawatch.verify_ssl'),
+            ]);
+        } catch (\GuzzleHttp\Exception\RequestException $e) {
+            return $e->getResponse();
+        } catch (\Exception $e) {
+            return null;
+        }
+    }
     /**
      * @return \GuzzleHttp\Client
      */
