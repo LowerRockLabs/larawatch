@@ -3,9 +3,9 @@
 namespace Larawatch\Models;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\MassPrunable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\MassPrunable;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Larawatch\Support\Concerns\UsesScheduleMonitoringModels;
 
@@ -20,6 +20,7 @@ use Larawatch\Support\Concerns\UsesScheduleMonitoringModels;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property string|null $lrl_id
  * @property-read \Larawatch\Models\MonitoredScheduledTask|null $monitoredScheduledTask
+ *
  * @method static Builder|MonitoredScheduledTaskLogItem newModelQuery()
  * @method static Builder|MonitoredScheduledTaskLogItem newQuery()
  * @method static Builder|MonitoredScheduledTaskLogItem query()
@@ -30,6 +31,7 @@ use Larawatch\Support\Concerns\UsesScheduleMonitoringModels;
  * @method static Builder|MonitoredScheduledTaskLogItem whereMonitoredScheduledTaskId($value)
  * @method static Builder|MonitoredScheduledTaskLogItem whereType($value)
  * @method static Builder|MonitoredScheduledTaskLogItem whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 class MonitoredScheduledTaskLogItem extends Model

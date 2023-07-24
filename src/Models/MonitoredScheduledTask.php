@@ -7,8 +7,8 @@ use Illuminate\Console\Events\ScheduledTaskFinished;
 use Illuminate\Console\Events\ScheduledTaskSkipped;
 use Illuminate\Console\Events\ScheduledTaskStarting;
 use Illuminate\Console\Scheduling\Event;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
 use Larawatch\Events\SchedulerEvent;
@@ -36,6 +36,7 @@ use Larawatch\Support\ScheduledTasks\ScheduledTaskFactory;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Larawatch\Models\MonitoredScheduledTaskLogItem> $logItems
  * @property-read int|null $log_items_count
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|MonitoredScheduledTask newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|MonitoredScheduledTask newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|MonitoredScheduledTask query()
@@ -54,6 +55,7 @@ use Larawatch\Support\ScheduledTasks\ScheduledTaskFactory;
  * @method static \Illuminate\Database\Eloquent\Builder|MonitoredScheduledTask whereTimezone($value)
  * @method static \Illuminate\Database\Eloquent\Builder|MonitoredScheduledTask whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|MonitoredScheduledTask whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 class MonitoredScheduledTask extends Model
@@ -101,7 +103,6 @@ class MonitoredScheduledTask extends Model
             ->getMonitoredScheduleTaskModel()
             ->findByName($task->name());
     }
-
 
     public function markAsRegisteredOnLarawatch(): self
     {
@@ -205,7 +206,7 @@ class MonitoredScheduledTask extends Model
         return $this;
     }
 
-    public function createLogItem(string $type): \Illuminate\Database\Eloquent\Model|MonitoredScheduledTaskLogItem
+    public function createLogItem(string $type): Model|MonitoredScheduledTaskLogItem
     {
         return $this->logItems()->create([
             'type' => $type,
