@@ -75,7 +75,7 @@ class Client
     }
 
     /**
-     * @return \GuzzleHttp\Client
+     * @return \GuzzleHttp\Client|\GuzzleHttp\ClientInterface
      */
     public function getGuzzleHttpClient()
     {

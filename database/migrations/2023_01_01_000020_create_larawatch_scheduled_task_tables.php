@@ -10,8 +10,6 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up(): void
     {
@@ -36,7 +34,6 @@ return new class extends Migration
             $table->timestamps();
         });
 
-
         Schema::create('larawatch_scheduled_task_items', function (Blueprint $table) {
             $table->bigIncrements('id');
 
@@ -58,8 +55,6 @@ return new class extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down(): void
     {

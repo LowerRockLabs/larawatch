@@ -2,12 +2,11 @@
 
 namespace Larawatch\Jobs;
 
-use Composer\InstalledVersions;
-use DateTime;
 use Illuminate\Bus\Queueable;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Larawatch\Traits\GeneratesPackageVersions;
 
 class SendPackageVersionsToAPI
 {
@@ -15,32 +14,16 @@ class SendPackageVersionsToAPI
     use SerializesModels;
     use InteractsWithQueue;
     use Queueable;
-
-    public DateTime $dateTime;
-
-    public array $installedPackages;
+    use GeneratesPackageVersions;
 
     public function __construct()
     {
-        $this->dateTime = new DateTime;
-
+        $this->generateData();
     }
 
     public function handle()
     {
-        $composerInstance = new InstalledVersions;
-
-        $dataArray = [
-            'event_datetime' => $this->dateTime,
-            'installed_packages_rawdata' => $composerInstance->getAllRawData()[0]['versions'],
-        ];
         $laraWatch = app('larawatch');
-        $laraWatch->logStats('updateinstalledpackages', $dataArray);
-
-    }
-
-    public function retryUntil(): DateTime
-    {
-        return now()->addMinutes(config('larawatch.lowerrocklabs.retry_job_for_minutes', 5))->toDateTime();
+        $laraWatch->logStats('updateinstalledpackages', $this->dataArray);
     }
 }

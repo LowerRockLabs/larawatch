@@ -1,6 +1,6 @@
 <?php
 
-namespace Larawatch\Http\Controllers;
+namespace Larawatch\Http\Controllers\API;
 
 use Illuminate\Http\Request;
 

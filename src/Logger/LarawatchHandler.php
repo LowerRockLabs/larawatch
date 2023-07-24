@@ -9,12 +9,8 @@ use Throwable;
 
 class LarawatchHandler extends AbstractProcessingHandler
 {
-    /** @var Larawatch */
-    protected $laraWatch;
+    protected Larawatch $laraWatch;
 
-    /**
-     * @param  int  $level
-     */
     public function __construct(Larawatch $laraWatch, $level = Logger::ERROR, bool $bubble = true)
     {
         $this->laraWatch = $laraWatch;
@@ -22,9 +18,6 @@ class LarawatchHandler extends AbstractProcessingHandler
         parent::__construct($level, $bubble);
     }
 
-    /**
-     * @param  array  $record
-     */
     protected function write($record): void
     {
         if (isset($record['context']['exception']) && $record['context']['exception'] instanceof Throwable) {

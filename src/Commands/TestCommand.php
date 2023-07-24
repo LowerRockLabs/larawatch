@@ -4,6 +4,7 @@ namespace Larawatch\Commands;
 
 use Exception;
 use Illuminate\Console\Command;
+use Larawatch\Larawatch;
 
 class TestCommand extends Command
 {

@@ -13,12 +13,12 @@ return [
         /*
          * The model you want to use as a MonitoredScheduledTask model
          */
-        'monitored_scheduled_task' => Larawatch\Larawatch\Models\MonitoredScheduledTask::class,
+        'monitored_scheduled_task' => Larawatch\Models\MonitoredScheduledTask::class,
 
         /*
          * The model you want to use as a MonitoredScheduledTaskLogItem model
          */
-        'monitored_scheduled_log_item' => Larawatch\Larawatch\Models\MonitoredScheduledTaskLogItem::class,
+        'monitored_scheduled_log_item' => Larawatch\Models\MonitoredScheduledTaskLogItem::class,
     ],
 
     'lowerrocklabs' => [

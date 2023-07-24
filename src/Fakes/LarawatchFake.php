@@ -4,7 +4,7 @@ namespace Larawatch\Fakes;
 
 use PHPUnit\Framework\Assert as PHPUnit;
 
-class LaraBugFake extends \LaraBug\LaraBug
+class LarawatchFake extends \Larawatch\Larawatch
 {
     /** @var array */
     public $exceptions = [];

@@ -7,8 +7,8 @@ use Illuminate\Console\Events\ScheduledTaskFinished;
 use Illuminate\Console\Events\ScheduledTaskSkipped;
 use Illuminate\Console\Events\ScheduledTaskStarting;
 use Illuminate\Console\Scheduling\Event;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
 use Larawatch\Events\SchedulerEvent;
@@ -62,14 +62,6 @@ class MonitoredScheduledTask extends Model
             ->findByName($task->name());
     }
 
-    public static function findForCronCheck(CronCheck $cronCheck): ?self
-    {
-        $monitoredScheduledTask = new static;
-
-        return $monitoredScheduledTask
-            ->getMonitoredScheduleTaskModel()
-            ->findByName($cronCheck->name);
-    }
 
     public function markAsRegisteredOnLarawatch(): self
     {
@@ -173,7 +165,7 @@ class MonitoredScheduledTask extends Model
         return $this;
     }
 
-    public function createLogItem(string $type): MonitoredScheduledTaskLogItem
+    public function createLogItem(string $type): \Illuminate\Database\Eloquent\Model|MonitoredScheduledTaskLogItem
     {
         return $this->logItems()->create([
             'type' => $type,
