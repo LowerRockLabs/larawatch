@@ -1,6 +1,6 @@
 <?php
 
-// config for Larawatch/Larawatch
+// config for Larawatch
 return [
 
     /*
@@ -64,4 +64,32 @@ return [
     'db_slowquery_threshold' => env('LARAWATCH_SLOWQUERY_THRESHOLD') ?? 3600,
 
     'enable_performance_metrics' => env('LARAWATCH_ENABLE_PERFORMANCE_METRICS') ?? false,
+
+    'environments' => [
+        'production',
+    ],
+
+    'project_version' => null,
+    'lines_count' => 25,
+    'sleep' => 5,
+    'except' => [
+        'Symfony\Component\HttpKernel\Exception\NotFoundHttpException',
+    ],
+    'blacklist' => [
+        '*authorization*',
+        '*password*',
+        '*token*',
+        '*auth*',
+        '*verification*',
+        '*credit_card*',
+        'cardToken', // mollie card token
+        '*cvv*',
+        '*iban*',
+        '*name*',
+        '*email*',
+    ],
+    // 'release' => trim(exec('git --git-dir ' . base_path('.git') . ' log --pretty="%h" -n1 HEAD')),
+    'server' => env('LARAWATCH_SERVER', 'https://www.larawatch.com/api/log'),
+    'verify_ssl' => env('LARAWATCH_VERIFY_SSL', true),
+
 ];

@@ -33,15 +33,13 @@ class Client
         try {
             return $this->getGuzzleHttpClient()->request('POST', config('larawatch.server'), [
                 'headers' => [
-                    'Authorization' => 'Bearer '.config('larawatch.destination_token'),
+                    'Authorization' => 'Bearer '.$this->login,
                     'Content-Type' => 'application/json',
                     'Accept' => 'application/json',
                     'User-Agent' => 'Larawatch-Package',
                 ],
                 'json' => array_merge([
                     'project' => $this->project,
-                    'project_key' => config('larawatch.project_key'),
-                    'server_key' => config('larawatch.server_key'),
                     'additional' => [],
                 ], $exception),
                 'verify' => config('larawatch.verify_ssl'),

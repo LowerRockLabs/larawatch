@@ -18,7 +18,7 @@ class TestCommand extends Command
             /** @var Larawatch $larawatch */
             $larawatch = app('larawatch');
 
-            if (config('larawatch.login_key')) {
+            if (config('larawatch.destination_token')) {
                 $this->info('✓ [Larawatch] Found login key');
             } else {
                 $this->error('✗ [Larawatch] Could not find your login key, set this in your .env');
