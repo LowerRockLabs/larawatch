@@ -41,12 +41,10 @@ class LarawatchServiceProvider extends ServiceProvider
         // $this->loadTranslationsFrom(__DIR__ . '/../resources/lang', 'laravel-advanced-authentication');
         AboutCommand::add('Larawatch', fn () => ['Version' => '1.0.0']);
 
-        if (config('larawatch.db_monitoring_enabled')) {
-            if (config('larawatch.db_slowquery_enabled')) {
-                DB::whenQueryingForLongerThan(config('larawatch.db_slowquery_threshold'), function ($connection, QueryExecuted $event) {
-                    SendSlowQueryToAPI::dispatch($event);
-                });
-            }
+        if (config('larawatch.slow_query.enabled')) {
+            DB::whenQueryingForLongerThan(config('larawatch.slow_query.threshold'), function ($connection, QueryExecuted $event) {
+                SendSlowQueryToAPI::dispatch($event);
+            });
         }
 
         if (class_exists(\Illuminate\Foundation\AliasLoader::class)) {

@@ -12,8 +12,8 @@ class ScheduleServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->callAfterResolving(Schedule::class, function (Schedule $schedule) {
-            $schedule->job(new SendServerStatsToAPI)->everyFifteenMinutes()->storeOutputInDb();
-            $schedule->job(new SendPackageVersionsToAPI)->everyFifteenMinutes()->storeOutputInDb();
+            $schedule->job(new SendServerStatsToAPI)->everyHour()->storeOutputInDb();
+            $schedule->job(new SendPackageVersionsToAPI)->everyHour()->storeOutputInDb();
 
         });
     }

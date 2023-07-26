@@ -9,6 +9,7 @@ return [
      */
     'date_format' => 'Y-m-d H:i:s',
 
+
     'models' => [
         /*
          * The model you want to use as a MonitoredScheduledTask model
@@ -46,35 +47,19 @@ return [
      */
     'destination_token' => env('LARAWATCH_TOKEN'),
 
-    /*
-     * Database Monitoring Section
-     */
-    'db_monitoring_enabled' => env('LARAWATCH_DB_ENABLED') ?? false, // Enable/Disable Database monitoring
-
-    // Enable or Disable the Max Connections Monitor
-    'db_maxconnections_enabled' => env('LARAWATCH_DB_MAXCONNECTIONS_ENABLED') ?? false,
-
-    // Specify a threshold for reporting on Max Connections
-    'db_maxconnections_threshold' => env('LARAWATCH_DB_MAXCONNECTIONS_THRESHOLD') ?? 500,
-
-    // Enable or Disable the Slow Query Monitor
-    'db_slowquery_enabled' => env('LARAWATCH_SLOWQUERY_ENABLED') ?? false,
-
-    // Specify a threshold for reporting on Slow Query
-    'db_slowquery_threshold' => env('LARAWATCH_SLOWQUERY_THRESHOLD') ?? 3600,
-
-    'enable_performance_metrics' => env('LARAWATCH_ENABLE_PERFORMANCE_METRICS') ?? false,
 
     'environments' => [
         'production',
     ],
 
     'project_version' => null,
+
     'lines_count' => 25,
     'sleep' => 5,
     'except' => [
         'Symfony\Component\HttpKernel\Exception\NotFoundHttpException',
     ],
+
     'blacklist' => [
         '*authorization*',
         '*password*',
@@ -92,4 +77,33 @@ return [
     'server' => env('LARAWATCH_SERVER', 'https://www.larawatch.com/api/log'),
     'verify_ssl' => env('LARAWATCH_VERIFY_SSL', true),
 
+
+    /**
+     * Feature Configuration
+     * 
+     * Here you may enable/disable features here
+     */
+
+    'enable_performance_metrics' => env('LARAWATCH_ENABLE_PERFORMANCE_METRICS') ?? false,
+
+    'database_busy' => [
+        'enabled' => env('LARAWATCH_DB_MAXCONNECTIONS_ENABLED') ?? false, // Enable or Disable the Max Connections Monitor
+        'threshold' => env('LARAWATCH_DB_MAXCONNECTIONS_THRESHOLD') ?? 500, // Specify a threshold for reporting on Max Connections
+    ],
+
+    'slow_query' => [
+        'enabled' => env('LARAWATCH_SLOWQUERY_ENABLED') ?? false, // Enable or Disable the Slow Query Monitor
+        'threshold' => env('LARAWATCH_DB_MAXCONNECTIONS_THRESHOLD') ?? 500, // Specify a threshold for reporting on Slow Query
+    ],
+
+    'server_stats' => [
+        /**
+         *  You should enable either the web or job
+         */
+        'web_enabled' =>  env('LARAWATCH_SERVER_STATS_WEB_ENABLED') ?? false, // Enable or Disable the Server Stats Web API
+        'job_enabled' => env('LARAWATCH_SERVER_STATS_JOB_ENABLED') ?? false, // Enable or Disable the Server Stats Job
+
+        'queue' => env('LARAWATCH_SERVER_STATS_QUEUE') ?? null, // Set the Queue to use for the Server Stats job
+        'connection' => env('LARAWATCH_SERVER_STATS_CONNECTION') ?? null, // Set the Queue Connection to use for the Server Stats job
+    ],
 ];
