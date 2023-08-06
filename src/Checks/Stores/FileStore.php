@@ -30,13 +30,26 @@ class FileStore
         $this->disk = Storage::disk($this->diskName);
     
 
+
+
         if ($this->disk->exists($this->fullPath)) {
             $existingData = json_decode($this->disk->get($this->fullPath),true);
-            $existingData[] = $checkResults->toArray();
+            foreach ($checkResults->toArray() as $key => $data)
+            {
+                foreach ($data as $key1 => $data1)
+
+                $existingData[$key][$key1][] = $data1;
+            }
+            
             $this->disk->write($this->fullPath, json_encode($existingData));
         }
         else {
-            $this->disk->write($this->fullPath, json_encode($checkResults->toArray()));   
+            foreach ($checkResults->toArray() as $key => $data)
+            {
+                $existingData[$key][] = $data;
+            }
+
+            $this->disk->write($this->fullPath, json_encode($existingData));   
             
         }
     }

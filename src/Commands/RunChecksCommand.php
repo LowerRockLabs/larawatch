@@ -26,9 +26,9 @@ class RunChecksCommand extends Command
         $checkList[] = (new DatabaseCheck());
         $checkList[] = (new DebugModeCheck());
         $checks = collect($checkList)->map(function (BaseCheck $check): array {
-            return [$check->getName() => $check->shouldRun()
+            return [$check->getName() => [$check->shouldRun()
                 ? $this->runCheck($check)
-                : (new CheckResult('skipped'))->check($check)->endedAt(now())];
+                : (new CheckResult('skipped'))->check($check)->endedAt(now())]];
         });
         $fileStore = new FileStore(config('larawatch.checks.diskName', 'local'), config('larawatch.checks.folderPath','larawatch'), 'larawatch-checks-'.date('Y-m-d').'.json');
         $fileStore->save($checks);
