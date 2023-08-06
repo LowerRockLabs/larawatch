@@ -5,8 +5,10 @@ namespace Larawatch\Commands;
 use Illuminate\Console\Command;
 use Larawatch\Jobs\SendPackageVersionsToAPI;
 use Larawatch\Checks\DatabaseCheck;
+use Larawatch\Checks\DebugModeCheck;
 use Larawatch\Checks\CheckResult;
 use Larawatch\Checks\BaseCheck;
+use Larawatch\Checks\Stores\FileStore;
 use Larawatch\Exceptions\Checks\CheckDidNotCompleteException;
 use Illuminate\Support\Facades\Log;
 
@@ -22,13 +24,14 @@ class RunChecksCommand extends Command
     public function handle()
     {
         $checkList[] = (new DatabaseCheck());
-        $checks = collect($checkList)->map(function (BaseCheck $check): CheckResult {
-            return $check->shouldRun()
+        $checkList[] = (new DebugModeCheck());
+        $checks = collect($checkList)->map(function (BaseCheck $check): array {
+            return [$check->getName() => $check->shouldRun()
                 ? $this->runCheck($check)
-                : (new CheckResult('skipped'))->check($check)->endedAt(now());
+                : (new CheckResult('skipped'))->check($check)->endedAt(now())];
         });
-        Log::info($checks);
-        
+        $fileStore = new FileStore('local', 'larawatch-checks.json');
+        $fileStore->save($checks);
 
         
     }
