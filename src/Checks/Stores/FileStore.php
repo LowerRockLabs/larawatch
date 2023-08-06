@@ -31,10 +31,12 @@ class FileStore
     
 
         if ($this->disk->exists($this->fullPath)) {
-            $this->disk->append($this->fullPath, trim(collect(Arr::wrap($checkResults))->toJson(), "\n"));
+            $existingData = json_decode($this->disk->get($this->fullPath),true);
+            $existingData[] = $checkResults->toArray();
+            $this->disk->write($this->fullPath, json_encode($existingData));
         }
         else {
-            $this->disk->write($this->fullPath, trim(collect(Arr::wrap($checkResults))->toJson(), "\n"));   
+            $this->disk->write($this->fullPath, json_encode($checkResults->toArray()));   
             
         }
     }
