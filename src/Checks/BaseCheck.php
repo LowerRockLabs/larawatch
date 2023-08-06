@@ -57,6 +57,13 @@ abstract class BaseCheck
         return Str::of($baseName)->beforeLast('Check');
     }
 
+    public function setExpression(string $expression): static    
+    {
+        $this->expression = $expression;
+        
+        return $this;
+    }
+
     public function shouldRun(): bool
     {
         foreach ($this->shouldRun as $shouldRun) {
