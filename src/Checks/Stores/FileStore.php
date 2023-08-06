@@ -6,26 +6,37 @@ use Exception;
 use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Arr;
 
 class FileStore 
 {
     protected FilesystemAdapter $disk;
 
-    protected string $path;
+    protected string $diskName;
+    protected string $folderPath;
+    protected string $fileName;
+    protected string $fullPath;
 
-    public function __construct(string $disk, string $path)
+    public function __construct(?string $diskName, ?string $folderPath, ?string $fileName)
     {
-        $this->disk = Storage::disk($disk);
-
-        $this->path = $path;
+        $this->diskName = $diskName ?? config('larawatch.checks.diskName','local');
+        $this->folderPath = $folderPath ?? config('larawatch.checks.folderPath','larawatch');
+        $this->fileName = $fileName ?? 'larawatch-checks-'.date('Y-m-d').'.json';
+        $this->fullPath = rtrim($this->folderPath, '/').'/'.ltrim($this->fileName, '/');
     }
 
     public function save(Collection $checkResults): void
     {
-        if ($this->disk->exists($this->path)) {
-            $this->disk->delete($this->path);
+        $this->disk = Storage::disk($this->diskName);
+    
+
+        if ($this->disk->exists($this->fullPath)) {
+            $this->disk->append($this->fullPath, trim(collect(Arr::wrap($checkResults))->toJson(), "\n"));
         }
-        $this->disk->write($this->path, $checkResults->toJson());
+        else {
+            $this->disk->write($this->fullPath, trim(collect(Arr::wrap($checkResults))->toJson(), "\n"));   
+            
+        }
     }
 
 }
