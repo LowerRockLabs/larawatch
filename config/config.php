@@ -9,7 +9,10 @@ return [
      */
     'date_format' => 'Y-m-d H:i:s',
 
-
+    'checks' => [
+        'diskName' => 'local',
+        'folderPath' => 'larawatch',
+    ],
     'models' => [
         /*
          * The model you want to use as a MonitoredScheduledTask model

@@ -30,7 +30,7 @@ class RunChecksCommand extends Command
                 ? $this->runCheck($check)
                 : (new CheckResult('skipped'))->check($check)->endedAt(now())];
         });
-        $fileStore = new FileStore('local', 'larawatch-checks.json');
+        $fileStore = new FileStore(config('larawatch.checks.diskName', 'local'), config('larawatch.checks.folderPath','larawatch').'/larawatch-checks-'.date('Y-m-d').'.json');
         $fileStore->save($checks);
 
         
