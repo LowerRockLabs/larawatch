@@ -37,8 +37,9 @@ class FileStore
             foreach ($checkResults->toArray() as $key => $data)
             {
                 foreach ($data as $key1 => $data1)
-
-                $existingData[$key][$key1][] = $data1;
+                {
+                    $existingData[$key1][] = $data1;
+                }
             }
             
             $this->disk->write($this->fullPath, json_encode($existingData));
