@@ -8,6 +8,7 @@ use Illuminate\Foundation\Console\AboutCommand;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
+use Larawatch\Commands\RunChecksCommand;
 use Larawatch\Commands\ListCommand;
 use Larawatch\Commands\SendPackageDetailsCommand;
 use Larawatch\Commands\SyncCommand;
@@ -83,6 +84,7 @@ class LarawatchServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
 
             $this->commands([
+                RunChecksCommand::class,
                 ListCommand::class,
                 SyncCommand::class,
                 SendPackageDetailsCommand::class,
