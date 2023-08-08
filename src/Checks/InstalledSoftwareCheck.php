@@ -2,7 +2,6 @@
 
 namespace Larawatch\Checks;
 
-use Illuminate\Database\ConnectionResolverInterface;
 use Illuminate\Support\Facades\Process;
 
 class InstalledSoftwareCheck extends BaseCheck
@@ -14,7 +13,7 @@ class InstalledSoftwareCheck extends BaseCheck
 
         $result = CheckResult::make(started_at: $this->checkStartTime)
             ->resultData([
-                'installed_packages' => $this->getInstalledPackages(),
+                'installed_software' => $this->getInstalledSoftware(),
             ]);
 
         return $result->ok();
@@ -25,24 +24,23 @@ class InstalledSoftwareCheck extends BaseCheck
         return 'dpkg-query -l --no-pager';
     }
 
-    protected function getInstalledPackages(): array
+    protected function getInstalledSoftware(): array
     {
         $method = $this->getRetrievalMethod();
 
         $runProcess = Process::run($method);
-        $packageList =  explode("\n", $runProcess->output());
-        $newPackageList = [];
-        foreach ($packageList as $packageListIndex => $installedPackage)
+        $softwareList =  explode("\n", $runProcess->output());
+        $newSoftwareList = [];
+        foreach ($softwareList as $softwareListIndex => $installedSoftware)
         {
-            $installedPackage = preg_replace("/\s\s+/", "||", $installedPackage); 
-            $newArray = explode("||", $installedPackage);
+            $newArray = explode("||", preg_replace("/\s\s+/", "||", $installedSoftware)); 
             if (isset($newArray[1]) && isset($newArray[2]))
             {
-                $newPackageList[] = ['packageName' => $newArray[1], 'packageVersion' => $newArray[2]];
+                $newSoftwareList[] = ['softwareName' => $newArray[1], 'softwareVersion' => $newArray[2]];
             }
 
         }
-        return $newPackageList;
+        return $newSoftwareList;
     }
 
 }

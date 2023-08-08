@@ -18,6 +18,7 @@ class RunChecksCommand extends Command
 
     public function handle()
     {
+        $checkList[] = (new \Larawatch\Checks\InstalledPackageCheck());
         $checkList[] = (new \Larawatch\Checks\InstalledSoftwareCheck());
         $checkList[] = (new \Larawatch\Checks\DatabaseCheck());
         $checkList[] = (new \Larawatch\Checks\DebugModeCheck());
