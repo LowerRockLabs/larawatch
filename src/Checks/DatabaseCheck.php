@@ -20,7 +20,7 @@ class DatabaseCheck extends BaseCheck
     public function run(): CheckResult
     {      
 
-        $result = CheckResult::make()
+        $result = CheckResult::make(started_at: $this->checkStartTime)
             ->resultData([
                 'database_size' => $this->getDatabaseSizeInGb(),
                 'connections' => $this->getDatabaseConnections(),

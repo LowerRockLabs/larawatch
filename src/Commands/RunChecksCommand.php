@@ -18,14 +18,13 @@ class RunChecksCommand extends Command
 
     public function handle()
     {
+        $checkList[] = (new \Larawatch\Checks\InstalledSoftwareCheck());
         $checkList[] = (new \Larawatch\Checks\DatabaseCheck());
         $checkList[] = (new \Larawatch\Checks\DebugModeCheck());
         $checkList[] = (new \Larawatch\Checks\CacheCheck());
 
         $checks = collect($checkList)->map(function (\Larawatch\Checks\BaseCheck $check): array {
-            return [$check->getName() => [$check->shouldRun()
-                ? $this->runCheck($check)
-                : (new \Larawatch\Checks\CheckResult('skipped'))->check($check)->endedAt(now())]];
+            return ($check->shouldRun() ? [$check->getName() => [$this->runCheck($check)]] : [$check->getName() => [$check->markAsSkipped()]]);
         });
         $fileStore = new \Larawatch\Checks\Stores\FileStore(config('larawatch.checks.diskName', 'local'), config('larawatch.checks.folderPath','larawatch'));
         $fileStore->save($checks);
@@ -63,9 +62,9 @@ class RunChecksCommand extends Command
 
     protected function outputResult(\Larawatch\Checks\CheckResult $result, Exception $exception = null): void
     {
-        $status = ucfirst((string) $result->status);
+        $resultStatus = ucfirst((string) $result->resultStatus);
 
-        $okMessage = $status;
+        $okMessage = $resultStatus;
 
         if (! empty($result->resultMessage)) {
             $okMessage .= ": {$result->resultMessage}";

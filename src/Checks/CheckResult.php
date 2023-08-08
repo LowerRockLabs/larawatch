@@ -3,6 +3,7 @@
 namespace Larawatch\Checks;
 
 use Carbon\CarbonInterface;
+use Carbon\Carbon;
 
 class CheckResult
 {
@@ -16,15 +17,20 @@ class CheckResult
 
     public ?CarbonInterface $ended_at;
 
-    public static function make(string $resultMessage = ''): self
+    public ?Carbon $started_at;
+
+    public static function make(string $resultMessage = '', Carbon $started_at = null): self
     {
-        return new self('ok', $resultMessage);
+        return new self('ok', $resultMessage, $started_at);
     }
 
     public function __construct(
         string $resultStatus = '',
         string $resultMessage = '',
+        Carbon $started_at = null,
     ) {
+        $this->resultStatus = $resultStatus ?? 'ok';
+        $this->started_at = $started_at ?? Carbon::now();
     }
 
 
@@ -44,19 +50,19 @@ class CheckResult
 
     public function getResultDetails(): array
     {
-        $getResultDetails = collect($this->getResultDetails)
+        $resultDetails = collect($this->getResultDetails)
             ->filter(function ($item) {
                 return is_scalar($item);
             })->toArray();
-
-        return [$this->resultMessage, $getResultDetails];
+        
+        return [$this->resultMessage, $resultDetails];
     }
 
     public function ok(string $resultMessage = ''): self
     {
         $this->resultMessage = $resultMessage;
 
-        $this->status = 'ok';
+        $this->resultStatus = 'ok';
 
         return $this;
     }
@@ -65,7 +71,7 @@ class CheckResult
     {
         $this->resultMessage = $resultMessage;
 
-        $this->status = 'warning';
+        $this->resultStatus = 'warning';
 
         return $this;
     }
@@ -74,7 +80,7 @@ class CheckResult
     {
         $this->resultMessage = $resultMessage;
 
-        $this->status = 'failed';
+        $this->resultStatus = 'failed';
 
         return $this;
     }

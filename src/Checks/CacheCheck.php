@@ -10,6 +10,9 @@ class CacheCheck extends BaseCheck
 {
     protected ?string $driver = null;
 
+    protected string $expression = '*/5 * * * *';
+
+
     public function driver(string $driver): self
     {
         $this->driver = $driver;
@@ -21,7 +24,7 @@ class CacheCheck extends BaseCheck
     {
         $driver = $this->driver ?? $this->defaultDriver();
 
-        $result = CheckResult::make()->resultData([
+        $result = CheckResult::make(started_at: $this->checkStartTime)->resultData([
             'driver' => $driver,
         ]);
 

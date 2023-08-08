@@ -53,7 +53,15 @@ class FileStore
             {
                 foreach ($data as $key1 => $data1)
                 {
-                    $existingData[$key1][] = $data1;
+                    if (is_array($data1) && isset($data1[0]) && $data1[0] instanceof \Larawatch\Checks\CheckResult)
+                    {
+                        $existingData[$key1][] = $data1[0];
+                    }
+                    else
+                    {
+                        $existingData[$key1][] = ['status' => 'skipped'];
+                    }
+                    
                 }
             }
             

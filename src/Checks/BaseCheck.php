@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Str;
 use Illuminate\Support\Traits\Conditionable;
 use Illuminate\Support\Traits\Macroable;
+use Carbon\Carbon;
 
 abstract class BaseCheck
 {
@@ -21,6 +22,8 @@ abstract class BaseCheck
 
     protected ?string $name = null;
 
+    protected ?Carbon $checkStartTime = null;
+
     /**
      * @var array<bool|callable(): bool>
      */
@@ -28,6 +31,10 @@ abstract class BaseCheck
 
     public function __construct()
     {
+        if (!isset($this->checkStartTime))
+        {
+            $this->checkStartTime = Carbon::now();
+        }
     }
 
     public static function new(): static
@@ -74,9 +81,7 @@ abstract class BaseCheck
             }
         }
 
-        $date = Date::now();
-
-        return (new CronExpression($this->expression))->isDue($date->toDateTimeString());
+        return (new CronExpression($this->expression))->isDue($this->checkStartTime->toDateTimeString());
     }
 
     public function if(bool|callable $condition)
@@ -99,7 +104,14 @@ abstract class BaseCheck
     
     public function markAsCrashed(): CheckResult
     {
-        return new CheckResult(status: 'crashed');
+        return new CheckResult(resultStatus: 'crashed');
+    }
+
+    public function markAsSkipped(): CheckResult
+    {
+        $result = new CheckResult(resultStatus: 'skipped');
+        $result->endedAt(now());
+        return $result;
     }
 
     public function onTerminate(mixed $request, mixed $response): void
