@@ -4,11 +4,6 @@ namespace Larawatch\Commands;
 
 use Illuminate\Console\Command;
 use Larawatch\Jobs\SendPackageVersionsToAPI;
-use Larawatch\Checks\DatabaseCheck;
-use Larawatch\Checks\DebugModeCheck;
-use Larawatch\Checks\CheckResult;
-use Larawatch\Checks\BaseCheck;
-use Larawatch\Checks\Stores\FileStore;
 use Larawatch\Exceptions\Checks\CheckDidNotCompleteException;
 use Illuminate\Support\Facades\Log;
 
@@ -23,20 +18,22 @@ class RunChecksCommand extends Command
 
     public function handle()
     {
-        $checkList[] = (new DatabaseCheck());
-        $checkList[] = (new DebugModeCheck());
-        $checks = collect($checkList)->map(function (BaseCheck $check): array {
+        $checkList[] = (new \Larawatch\Checks\DatabaseCheck());
+        $checkList[] = (new \Larawatch\Checks\DebugModeCheck());
+        $checkList[] = (new \Larawatch\Checks\CacheCheck());
+
+        $checks = collect($checkList)->map(function (\Larawatch\Checks\BaseCheck $check): array {
             return [$check->getName() => [$check->shouldRun()
                 ? $this->runCheck($check)
-                : (new CheckResult('skipped'))->check($check)->endedAt(now())]];
+                : (new \Larawatch\Checks\CheckResult('skipped'))->check($check)->endedAt(now())]];
         });
-        $fileStore = new FileStore(config('larawatch.checks.diskName', 'local'), config('larawatch.checks.folderPath','larawatch'), 'larawatch-checks-'.date('Y-m-d').'.json');
+        $fileStore = new \Larawatch\Checks\Stores\FileStore(config('larawatch.checks.diskName', 'local'), config('larawatch.checks.folderPath','larawatch'));
         $fileStore->save($checks);
 
         
     }
 
-    public function runCheck(BaseCheck $check): CheckResult
+    public function runCheck(\Larawatch\Checks\BaseCheck $check): \Larawatch\Checks\CheckResult
     {
       // event(new CheckStartingEvent($check));
 
@@ -45,7 +42,7 @@ class RunChecksCommand extends Command
             $this->line("Running check: {$check->getName()}...");
             $result = $check->run();
         } catch (Exception $exception) {
-            $exception = CheckDidNotComplete::make($check, $exception);
+            $exception = CheckDidNotCompleteException::make($check, $exception);
             report($exception);
 
             $this->thrownExceptions[] = $exception;
@@ -64,7 +61,7 @@ class RunChecksCommand extends Command
         return $result;
     }
 
-    protected function outputResult(CheckResult $result, Exception $exception = null): void
+    protected function outputResult(\Larawatch\Checks\CheckResult $result, Exception $exception = null): void
     {
         $status = ucfirst((string) $result->status);
 

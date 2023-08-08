@@ -18,12 +18,12 @@ class DatabaseCheck extends BaseCheck
 
 
     public function run(): CheckResult
-    {
-        $databaseSizeInGb = $this->getDatabaseSizeInGb();
+    {      
 
         $result = CheckResult::make()
             ->resultData([
-                'database_size' => $databaseSizeInGb,
+                'database_size' => $this->getDatabaseSizeInGb(),
+                'connections' => $this->getDatabaseConnections(),
             ]);
 
         return $result->ok();
@@ -42,4 +42,14 @@ class DatabaseCheck extends BaseCheck
 
         return round((new DBInfo())->databaseSizeInMb($connection) / 1000, 2);
     }
+
+    protected function getDatabaseConnections(): int
+    {
+        $connectionName = $this->connectionName ?? $this->getDefaultConnectionName();
+
+        $connection = app(ConnectionResolverInterface::class)->connection($connectionName);
+
+        return (new DBInfo())->databaseSizeInMb($connection);
+    }
+
 }

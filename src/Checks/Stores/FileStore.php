@@ -17,11 +17,26 @@ class FileStore
     protected string $fileName;
     protected string $fullPath;
 
-    public function __construct(?string $diskName, ?string $folderPath, ?string $fileName)
+    public function __construct(?string $diskName, ?string $folderPath)
     {
+        $currentMinute = intval(date('i'));
+        $pinpoint = 4;
+        if ($currentMinute < 15)
+        {
+            $pinpoint = 1;
+        }
+        else if ($currentMinute < 30)
+        {
+            $pinpoint = 2;
+        }
+        else if ($currentMinute < 45)
+        {
+            $pinpoint = 3;
+        }
+
         $this->diskName = $diskName ?? config('larawatch.checks.diskName','local');
         $this->folderPath = $folderPath ?? config('larawatch.checks.folderPath','larawatch');
-        $this->fileName = $fileName ?? 'larawatch-checks-'.date('Y-m-d').'.json';
+        $this->fileName = $fileName ?? 'larawatch-checks-'.date('Y-m-d H-').$pinpoint.'.json';
         $this->fullPath = rtrim($this->folderPath, '/').'/'.ltrim($this->fileName, '/');
     }
 
