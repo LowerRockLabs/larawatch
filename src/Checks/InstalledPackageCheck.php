@@ -6,7 +6,7 @@ use Composer\InstalledVersions;
 
 class InstalledPackageCheck extends BaseCheck
 {
-    protected string $expression = '* * * * *';
+    protected string $expression = '0 * * * *';
 
     public function run(): CheckResult
     {      

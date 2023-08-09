@@ -57,6 +57,7 @@ class DatabaseCheck extends BaseCheck
                 'basic_check' => $basicCheck,
                 'connections' => $dbConnections,
                 'database_size' => $dbSize,
+                'sub_check_failed' => $this->subCheckFailed,
             ]); 
 
         return (!$this->subCheckFailed ? $result->ok() : $result->failed());
@@ -65,22 +66,30 @@ class DatabaseCheck extends BaseCheck
     public function basicCheck()
     {
         try {
-            $dbname = DB::connection($this->connectionName)->getDatabaseName();
-        } catch (\Illuminate\Database\QueryException $e)  {
-            report ($e);
+            $dbConnection = DB::connection($this->connectionName)->select('SELECT DISTINCT table_schema from information_schema.tables');
+        } catch (PDOException $e) {
             echo 'QueryException Thrown';
-            return false;
+            $this->subCheckFailed = true;
+        } catch (\Illuminate\Database\QueryException $e)  {
+            echo 'QueryException Thrown';
+            $this->subCheckFailed = true;
         } catch(Exception $e) {
-            report ($e);
             echo 'Exception Thrown';
+            $this->subCheckFailed = true;
+        }
+
+        if ($this->subCheckFailed)
+        {
             return false;
         }
-        if ($dbname)
+        if ($dbConnection)
         {
-           echo 'Returning True: '. $dbname;
+           echo 'Returning True: '. $this->connectionName;
             return true;
         } 
         echo 'Returning False';
+        $this->subCheckFailed = true;
+
         return false;
 
     }
@@ -106,25 +115,38 @@ class DatabaseCheck extends BaseCheck
     protected function getDatabaseConnections(): int
     {
         $connection = $this->setupConnection();
-        if ($connection)
-        {
-            return (new DBInfo())->databaseSizeInMb($connection);
+        try {
+            $connection = $this->setupConnection();
+        } catch (\Illuminate\Database\QueryException $e)  {
+            echo 'QueryException Thrown';
+            $this->subCheckFailed = true;
+        } catch(Exception $e) {
+            echo 'Exception Thrown';
+            $this->subCheckFailed = true;
         }
-        $this->subCheckFailed = true;
 
-        return 0;
-
+        try {
+            $dbinMb = (new DBInfo())->databaseSizeInMb($connection);
+        } catch (\Illuminate\Database\QueryException $e)  {
+            echo 'QueryException Thrown';
+            $this->subCheckFailed = true;
+        } catch(Exception $e) {
+            echo 'Exception Thrown';
+            $this->subCheckFailed = true;
+        }
+        return $dbinMb;
     }
 
     protected function setupConnection()
     {
         try {
             $connection = app(ConnectionResolverInterface::class)->connection($this->connectionName); 
-        }
-        catch (Exception $e)
-        {
+        } catch (\Illuminate\Database\QueryException $e)  {
+            echo 'QueryException Thrown';
             $this->subCheckFailed = true;
-            return false;
+        } catch(Exception $e) {
+            echo 'Exception Thrown';
+            $this->subCheckFailed = true;
         }
         return $connection ?? false;
     }
