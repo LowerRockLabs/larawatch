@@ -55,9 +55,30 @@ class DBInfo
 
     protected function getMySQLDatabaseSize(ConnectionInterface $connection): int
     {
-        return $connection->selectOne('SELECT size from (SELECT table_schema "name", ROUND(SUM(data_length + index_length) / 1024 / 1024) as size FROM information_schema.tables GROUP BY table_schema) alias_one where name = ?', [
-            $connection->getDatabaseName(),
-        ])->size;
+        try {
+            $dbName = $connection->getDatabaseName();
+        } catch (Exception $e) {
+            report($e);
+            return 0;
+        }
+        try {
+            $databaseList = $connection->select('SELECT DISTINCT table_schema from information_schema.tables');
+            if(in_array($connection->getDatabaseName(), $databaseList))
+            {
+                $instance = $connection->select('SELECT size from (SELECT table_schema "name", ROUND(SUM(data_length + index_length) / 1024 / 1024) as size FROM information_schema.tables GROUP BY table_schema) alias_one where name = ?', [$dbName]);
+            }
+            else
+            {
+                return 0;
+            }
+        } catch (\Illuminate\Database\QueryException $e) {
+            report($e);
+            return 0;
+        } catch (Exception $e) {
+            report($e);
+            return 0;
+        } 
+        return $instance[0]->size;
     }
 
     protected function getPostgresDatabaseSize(ConnectionInterface $connection): int

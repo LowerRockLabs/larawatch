@@ -18,13 +18,26 @@ class RunChecksCommand extends Command
 
     public function handle()
     {
+        foreach (config('database.connections') as $connectionName => $connectionData)
+        {
+            $this->line('');
+            $this->line($connectionName);
+
+            if (in_array($connectionData['driver'], ['mysql', 'pgsql']))
+            {
+                $this->line('Should Run: '.$connectionData['driver']);
+                $checkList[] = new \Larawatch\Checks\DatabaseCheck(connectionName: $connectionName);
+
+            }
+        }
+        
+        $checkList[] = (new \Larawatch\Checks\AppOptimizedCheck());
         $checkList[] = (new \Larawatch\Checks\InstalledPackageCheck());
         $checkList[] = (new \Larawatch\Checks\InstalledSoftwareCheck());
-        $checkList[] = (new \Larawatch\Checks\DatabaseCheck());
         $checkList[] = (new \Larawatch\Checks\DebugModeCheck());
         $checkList[] = (new \Larawatch\Checks\CacheCheck());
 
-        $checks = collect($checkList)->map(function (\Larawatch\Checks\BaseCheck $check): array {
+        $checks = collect($checkList)->map(function ($check): array {
             return ($check->shouldRun() ? [$check->getName() => [$this->runCheck($check)]] : [$check->getName() => [$check->markAsSkipped()]]);
         });
         $fileStore = new \Larawatch\Checks\Stores\FileStore(config('larawatch.checks.diskName', 'local'), config('larawatch.checks.folderPath','larawatch'));

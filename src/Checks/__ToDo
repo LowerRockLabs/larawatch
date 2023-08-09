@@ -1,0 +1,26 @@
+
+# Needs Further Work - Get All Examples
+## Application Cache
+## DB - For Each
+
+# Completed
+## DebugMode
+## Installed Packages
+## Installed Software
+## OptimizedApp
+
+Cached Config/Routes/Event
+DB
+	DB Connection
+	DB Table Size
+
+Environment
+Git Check Branch/Head
+Horizon
+MeiliSearch
+QueueCheck
+RedisCheck
+RedisMemoryUsage
+ScheduleCheck
+SecurityAdvisories
+UsedDiskSpace

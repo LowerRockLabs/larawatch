@@ -3,11 +3,32 @@
 namespace Larawatch\Checks;
 
 use Illuminate\Database\ConnectionResolverInterface;
+use Illuminate\Support\Str;
 use Larawatch\Support\DBInfo;
+use Illuminate\Support\Facades\DB;
 
 class DatabaseCheck extends BaseCheck
 {
-    protected ?string $connectionName = null;
+    protected string $connectionName;
+
+    protected bool $subCheckFailed = false;
+
+    public function __construct(string $connectionName)
+    {
+        $this->connectionName($connectionName);
+        if (!isset($this->checkStartTime))
+        {
+            $this->checkStartTime = \Carbon\Carbon::now();
+        }
+
+    }
+
+    public function getName(): string
+    {
+        return class_basename(static::class) ."-".$this->connectionName;
+
+    }
+
 
     public function connectionName(string $connectionName): self
     {
@@ -16,17 +37,52 @@ class DatabaseCheck extends BaseCheck
         return $this;
     }
 
-
     public function run(): CheckResult
-    {      
-
+    {
+        $basicCheck = $this->basicCheck();
+        $dbConnections = 0;
+        $dbSize = 0;
+        if ($basicCheck)
+        {
+            $dbConnections = $this->getDatabaseConnections();
+            $dbSize = $this->getDatabaseSizeInGb();
+        }
+        else
+        {
+            $this->subCheckFailed = true;
+        }
         $result = CheckResult::make(started_at: $this->checkStartTime)
             ->resultData([
-                'database_size' => $this->getDatabaseSizeInGb(),
-                'connections' => $this->getDatabaseConnections(),
-            ]);
+                'connection_name' => $this->connectionName,
+                'basic_check' => $basicCheck,
+                'connections' => $dbConnections,
+                'database_size' => $dbSize,
+            ]); 
 
-        return $result->ok();
+        return (!$this->subCheckFailed ? $result->ok() : $result->failed());
+    }
+
+    public function basicCheck()
+    {
+        try {
+            $dbname = DB::connection($this->connectionName)->getDatabaseName();
+        } catch (\Illuminate\Database\QueryException $e)  {
+            report ($e);
+            echo 'QueryException Thrown';
+            return false;
+        } catch(Exception $e) {
+            report ($e);
+            echo 'Exception Thrown';
+            return false;
+        }
+        if ($dbname)
+        {
+           echo 'Returning True: '. $dbname;
+            return true;
+        } 
+        echo 'Returning False';
+        return false;
+
     }
 
     protected function getDefaultConnectionName(): string
@@ -36,20 +92,41 @@ class DatabaseCheck extends BaseCheck
 
     protected function getDatabaseSizeInGb(): float
     {
-        $connectionName = $this->connectionName ?? $this->getDefaultConnectionName();
+        $connection = $this->setupConnection();
+        if ($connection)
+        {
+            return round((new DBInfo())->databaseSizeInMb($connection) / 1000, 2);
+        }
+        $this->subCheckFailed = true;
 
-        $connection = app(ConnectionResolverInterface::class)->connection($connectionName);
+        return 0.00;
 
-        return round((new DBInfo())->databaseSizeInMb($connection) / 1000, 2);
     }
 
     protected function getDatabaseConnections(): int
     {
-        $connectionName = $this->connectionName ?? $this->getDefaultConnectionName();
+        $connection = $this->setupConnection();
+        if ($connection)
+        {
+            return (new DBInfo())->databaseSizeInMb($connection);
+        }
+        $this->subCheckFailed = true;
 
-        $connection = app(ConnectionResolverInterface::class)->connection($connectionName);
+        return 0;
 
-        return (new DBInfo())->databaseSizeInMb($connection);
+    }
+
+    protected function setupConnection()
+    {
+        try {
+            $connection = app(ConnectionResolverInterface::class)->connection($this->connectionName); 
+        }
+        catch (Exception $e)
+        {
+            $this->subCheckFailed = true;
+            return false;
+        }
+        return $connection ?? false;
     }
 
 }
