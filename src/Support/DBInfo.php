@@ -9,6 +9,13 @@ use Larawatch\Exceptions\UnsupportedItems\UnsupportedDatabaseException;
 
 class DBInfo
 {
+    protected ConnectionInterface $connection;
+
+    public function construct(ConnectionInterface $connection)
+    {
+        $this->connection = $connection;
+    }
+
     public function connectionCount(ConnectionInterface $connection): int
     {
         return match (true) {
@@ -55,30 +62,9 @@ class DBInfo
 
     protected function getMySQLDatabaseSize(ConnectionInterface $connection): int
     {
-        try {
-            $dbName = $connection->getDatabaseName();
-        } catch (Exception $e) {
-            report($e);
-            return 0;
-        }
-        try {
-            $databaseList = $connection->select('SELECT DISTINCT table_schema from information_schema.tables');
-            if(in_array($connection->getDatabaseName(), $databaseList))
-            {
-                $instance = $connection->select('SELECT size from (SELECT table_schema "name", ROUND(SUM(data_length + index_length) / 1024 / 1024) as size FROM information_schema.tables GROUP BY table_schema) alias_one where name = ?', [$dbName]);
-            }
-            else
-            {
-                return 0;
-            }
-        } catch (\Illuminate\Database\QueryException $e) {
-            report($e);
-            return 0;
-        } catch (Exception $e) {
-            report($e);
-            return 0;
-        } 
-        return $instance[0]->size;
+        return $connection->selectOne('SELECT size from (SELECT table_schema "name", ROUND(SUM(data_length + index_length) / 1024 / 1024) as size FROM information_schema.tables GROUP BY table_schema) alias_one where name = ?', [
+            $connection->getDatabaseName(),
+        ])->size;
     }
 
     protected function getPostgresDatabaseSize(ConnectionInterface $connection): int
