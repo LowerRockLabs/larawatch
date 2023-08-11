@@ -2,7 +2,7 @@
 
 namespace Larawatch\Checks;
 
-use Illuminate\Support\Facades\Process;
+use Symfony\Component\Process\Process;
 
 class InstalledSoftwareCheck extends BaseCheck
 {

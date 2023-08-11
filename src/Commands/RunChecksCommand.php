@@ -53,6 +53,8 @@ class RunChecksCommand extends Command
         $checkList[] = new \Larawatch\Checks\DiskSpaceCheck(fileSystemsToCheck: $filesystemsToCheck);
 
         //$checkList[] = (new \Larawatch\Checks\DiskSpaceCheck());
+        
+        $checkList[] = (new \Larawatch\Checks\RepoVersionCheck());
         $checkList[] = (new \Larawatch\Checks\AppOptimizedCheck());
         $checkList[] = (new \Larawatch\Checks\InstalledPackageCheck());
         $checkList[] = (new \Larawatch\Checks\InstalledSoftwareCheck());
