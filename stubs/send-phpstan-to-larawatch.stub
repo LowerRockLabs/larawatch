@@ -1,0 +1,40 @@
+name: send-phpstan-to-larawatch
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        php: [8.2]
+        laravel: [10]
+        stability: [prefer-dist]
+
+    name: PHPStan - P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }} - ${{ matrix.os }}
+    env:
+      extensionKey: phpextensions
+      extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick, fileinfo
+
+    steps:
+
+      - name: Install dependencies
+        run: composer require "nunomaduro/larastan" --no-interaction
+
+      - shell: bash
+        run: |
+          php ./vendor/bin/phpstan --error-format=json analyse > ./phpstan-latest.json
+          echo "exitcode=0" >> $GITHUB_OUTPUT
+        continue-on-error: true
+
+      - uses: leandro-hermes/action-upload-file@v1.1.0
+        env:
+          PROJECT_KEY: ${{ secrets.PROJECT_KEY }}
+        with:
+          host: 'dev.larawatch.com'
+          path: '/api/uploadphpstan'
+          filePath: 'phpstan-latest.json'
+          data: '{ "project_key": "${{ secrets.PROJECT_KEY }}", "test": "test812381" }'
+          https: true

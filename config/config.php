@@ -12,7 +12,11 @@ return [
     'checks' => [
         'diskName' => 'local',
         'folderPath' => 'larawatch',
+        
+        'databases_active' => [],
+        'databases_ignore' => ['pgsql'],
     ],
+
     'models' => [
         /*
          * The model you want to use as a MonitoredScheduledTask model

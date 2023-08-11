@@ -65,6 +65,11 @@ class DatabaseCheck extends BaseCheck
 
     public function basicCheck(): bool
     {
+        if ((config('database.connections.'.$this->connectionName)['database'] == null))
+        {
+            $this->subCheckFailed = true;
+            return false;
+        }
         try {
             $dbConnection = DB::connection($this->connectionName)->select('SELECT DISTINCT table_schema from information_schema.tables');
         } catch (PDOException $e) {

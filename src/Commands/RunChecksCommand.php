@@ -18,7 +18,29 @@ class RunChecksCommand extends Command
 
     public function handle()
     {
-        foreach (config('database.connections') as $connectionName => $connectionData)
+        if (count(config('larawatch.checks.databases_active')) > 0)
+        {
+            $databasesToCheck = config('larawatch.checks.databases_active');
+        }
+        else
+        {
+            $databasesToCheck = config('database.connections');
+        }
+
+        if (count(config('larawatch.checks.databases_ignore')) > 0)
+        {
+            foreach ($databasesToCheck as $dbCheckIndex => $dbCheckName)
+            {
+                if (in_array($dbCheckIndex, config('larawatch.checks.databases_ignore')))
+                {
+                    unset($databasesToCheck[$dbCheckIndex]);
+                }
+            }
+
+        }
+
+
+        foreach ($databasesToCheck as $connectionName => $connectionData)
         {
             $this->line('');
             $this->line($connectionName);
