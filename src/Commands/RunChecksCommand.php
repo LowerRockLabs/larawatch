@@ -42,17 +42,17 @@ class RunChecksCommand extends Command
 
         foreach ($databasesToCheck as $connectionName => $connectionData)
         {
-            $this->line('');
-            $this->line($connectionName);
-
-            if (in_array($connectionData['driver'], ['mysql', 'pgsql']))
+            if (!in_array($connectionData['driver'], ['mysql', 'pgsql']))
             {
-                $this->line('Should Run: '.$connectionData['driver']);
-                $checkList[] = new \Larawatch\Checks\DatabaseCheck(connectionName: $connectionName);
-
+                unset($databasesToCheck[$connectionName]);
             }
         }
-        
+        $checkList[] = new \Larawatch\Checks\DatabaseCheck(connectionsToCheck: $databasesToCheck);
+
+        $filesystemsToCheck = config('filesystems.disks');
+        $checkList[] = new \Larawatch\Checks\DiskSpaceCheck(fileSystemsToCheck: $filesystemsToCheck);
+
+        //$checkList[] = (new \Larawatch\Checks\DiskSpaceCheck());
         $checkList[] = (new \Larawatch\Checks\AppOptimizedCheck());
         $checkList[] = (new \Larawatch\Checks\InstalledPackageCheck());
         $checkList[] = (new \Larawatch\Checks\InstalledSoftwareCheck());

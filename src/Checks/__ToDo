@@ -1,18 +1,19 @@
 
 # Needs Further Work - Get All Examples
 ## Application Cache
-## DB - For Each
 
 # Completed
 ## DebugMode
 ## Installed Packages
 ## Installed Software
 ## OptimizedApp
+## DB - For Each
+###	DB Connection
+### DB Connection Count
+### DB Size
+## Cached Config/Routes/Event
 
-Cached Config/Routes/Event
-DB
-	DB Connection
-	DB Table Size
+
 
 Environment
 Git Check Branch/Head

@@ -11,11 +11,15 @@ class DatabaseCheck extends BaseCheck
 {
     protected string $connectionName;
 
+    protected array $connectionsToCheck = [];
+
+    protected array $temporaryResults = [];
+
     protected bool $subCheckFailed = false;
 
-    public function __construct(string $connectionName)
+    public function __construct(array $connectionsToCheck)
     {
-        $this->connectionName($connectionName);
+        $this->connectionsToCheck($connectionsToCheck);
         if (!isset($this->checkStartTime))
         {
             $this->checkStartTime = \Carbon\Carbon::now();
@@ -25,8 +29,15 @@ class DatabaseCheck extends BaseCheck
 
     public function getName(): string
     {
-        return class_basename(static::class) ."-".$this->connectionName;
+        return class_basename(static::class);
 
+    }
+
+    public function connectionsToCheck(array $connectionsToCheck): self
+    {
+        $this->connectionsToCheck = $connectionsToCheck;
+
+        return $this;
     }
 
 
@@ -39,26 +50,33 @@ class DatabaseCheck extends BaseCheck
 
     public function run(): CheckResult
     {
-        $basicCheck = $this->basicCheck();
-        $dbConnections = 0;
-        $dbSize = 0;
-        if ($basicCheck)
+
+        foreach ($this->connectionsToCheck as $connectionName => $connectionData)
         {
-            $dbConnections = $this->getDatabaseConnections();
-            $dbSize = $this->getDatabaseSizeInGb();
-        }
-        else
-        {
-            $this->subCheckFailed = true;
-        }
-        $result = CheckResult::make(started_at: $this->checkStartTime)
-            ->resultData([
+            $dbConnections = 0;
+            $dbSize = 0;    
+            $this->connectionName = $connectionName;
+            $basicCheck = $this->basicCheck();
+            if ($basicCheck)
+            {
+                $dbConnections = $this->getDatabaseConnections();
+                $dbSize = $this->getDatabaseSizeInGb();
+            }
+            else
+            {
+                $this->subCheckFailed = true;
+            }
+    
+            $this->temporaryResults[] = [
                 'connection_name' => $this->connectionName,
                 'basic_check' => $basicCheck,
                 'connections' => $dbConnections,
                 'database_size' => $dbSize,
                 'sub_check_failed' => $this->subCheckFailed,
-            ]); 
+            ];
+        }
+        $result = CheckResult::make(started_at: $this->checkStartTime)
+            ->resultData($this->temporaryResults); 
 
         return (!$this->subCheckFailed ? $result->ok() : $result->failed());
     }
