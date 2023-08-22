@@ -3,17 +3,14 @@
 namespace Larawatch\Providers;
 
 use Illuminate\Console\Scheduling\Schedule;
-use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
-use Larawatch\Jobs\SendPackageVersionsToAPI;
-use Larawatch\Jobs\SendServerStatsToAPI;
+use Larawatch\Jobs\SendDataToLarawatch;
 
-class ScheduleServiceProvider extends ServiceProvider
+class ScheduleServiceProvider extends \Illuminate\Foundation\Support\Providers\EventServiceProvider
 {
     public function boot()
     {
         $this->callAfterResolving(Schedule::class, function (Schedule $schedule) {
-            $schedule->job(new SendServerStatsToAPI)->everyHour()->storeOutputInDb();
-            $schedule->job(new SendPackageVersionsToAPI)->everyHour()->storeOutputInDb();
+            //$schedule->job(new SendDataToLarawatch)->everyFifteenMinutes();
 
         });
     }

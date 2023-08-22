@@ -54,8 +54,13 @@ class CheckResult
             ->filter(function ($item) {
                 return is_scalar($item);
             })->toArray();
-        
-        return [$this->resultMessage, $resultDetails];
+            
+    
+
+        return [$this->resultMessage, [...$resultDetails, ...[
+            'project_key' => config('larawatch.project_key'),
+            'server_key' => config('larawatch.server_key')
+           ]]];
     }
 
     public function ok(string $resultMessage = ''): self
@@ -87,8 +92,10 @@ class CheckResult
 
     public function resultData(array $resultData): self
     {
-        $this->resultData = $resultData;
-
+        $this->resultData = [...$resultData, ...[
+            'project_key' => config('larawatch.project_key'),
+            'server_key' => config('larawatch.server_key')
+           ]];
         return $this;
     }
 
