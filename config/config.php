@@ -15,6 +15,10 @@ return [
         
         'databases_active' => [],
         'databases_ignore' => ['pgsql'],
+
+        /* File System Checks */
+        'local_filesystems' => [],
+        'cloud_filesystems' => [],
     ],
 
     'models' => [
@@ -42,7 +46,7 @@ return [
     /*
      * The unique project key, available via the Dashboard. Should be unique to a project
      */
-    'project_key' => env('LARAWATCH_PROJECT_KEY'),
+    'project_key' => env('LARAWATCH_PROJECT_KEY') ?? 'unknown',
 
     /*
      * The unique server key, available via the Dashboard.  Should be unique to a server

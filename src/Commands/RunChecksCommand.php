@@ -47,19 +47,30 @@ class RunChecksCommand extends Command
                 unset($databasesToCheck[$connectionName]);
             }
         }
-        $checkList[] = new \Larawatch\Checks\DatabaseCheck(connectionsToCheck: $databasesToCheck);
 
-        $filesystemsToCheck = config('filesystems.disks');
-        $checkList[] = new \Larawatch\Checks\DiskSpaceCheck(fileSystemsToCheck: $filesystemsToCheck);
 
-        //$checkList[] = (new \Larawatch\Checks\DiskSpaceCheck());
-        
-        $checkList[] = (new \Larawatch\Checks\RepoVersionCheck());
         $checkList[] = (new \Larawatch\Checks\AppOptimizedCheck());
+        $checkList[] = (new \Larawatch\Checks\CacheCheck());
+        $checkList[] = (new \Larawatch\Checks\DebugModeCheck());
+        $checkList[] = (new \Larawatch\Checks\DatabaseCheck(connectionsToCheck: $databasesToCheck));
+        $checkList[] = (new \Larawatch\Checks\EnvironmentCheck());
         $checkList[] = (new \Larawatch\Checks\InstalledPackageCheck());
         $checkList[] = (new \Larawatch\Checks\InstalledSoftwareCheck());
-        $checkList[] = (new \Larawatch\Checks\DebugModeCheck());
-        $checkList[] = (new \Larawatch\Checks\CacheCheck());
+        $checkList[] = (new \Larawatch\Checks\RepoVersionCheck());
+    
+        $fileSystemsToCheck = $this->determineFileSystemsToCheck();
+
+        /**
+         * Configure File Systems To Check
+         */
+        if (is_array($fileSystemsToCheck['cloud'])) {
+            $checkList[] = (new \Larawatch\Checks\CloudStorageCheck($fileSystemsToCheck['cloud']));    
+        }
+        if (is_array($fileSystemsToCheck['local'])) {
+            $checkList[] = (new \Larawatch\Checks\DiskSpaceCheck(fileSystemsToCheck: $fileSystemsToCheck['local']));    
+        }
+
+ 
 
         $checks = collect($checkList)->map(function ($check): array {
             return ($check->shouldRun() ? [$check->getName() => [$this->runCheck($check)]] : [$check->getName() => [$check->markAsSkipped()]]);
@@ -68,6 +79,49 @@ class RunChecksCommand extends Command
         $fileStore->save($checks);
 
         
+    }
+
+    public function determineFileSystemsToCheck(): array
+    {
+        $fileSystemsToCheck = ['local' => [], 'cloud' => []];
+        if (!empty(config('larawatch.checks.local_filesystems')))
+        {
+            $fileSystemsToCheck['local'] = config('larawatch.checks.local_filesystems');
+        }
+        if (!empty(config('larawatch.checks.cloud_filesystems')))
+        {
+            $fileSystemsToCheck['cloud'] = config('larawatch.checks.cloud_filesystems');
+        }
+
+        if (!empty($fileSystemsToCheck['local']) && !empty($fileSystemsToCheck['cloud']))
+        {
+            return $fileSystemsToCheck;
+        }
+
+        // Need to Get All Disks Into Collection
+        $allConfiguredFileSystems =  $localConfiguredFileSystems = $cloudConfiguredFileSystems = collect(config('filesystems.disks'));
+
+        // Filter Local
+
+        $localConfiguredFileSystems = $localConfiguredFileSystems->filter(function (array $value, string $key) {
+
+            return ($value['driver'] == "local");
+        })->toArray();
+
+        $cloudConfiguredFileSystems = $cloudConfiguredFileSystems->filter(function (array $value, string $key) {
+
+            return ($value['driver'] != "local");
+        })->toArray();
+
+
+
+        $fileSystemsToCheck['local'] = $localConfiguredFileSystems;
+
+        $fileSystemsToCheck['cloud'] = $cloudConfiguredFileSystems;
+
+
+        return $fileSystemsToCheck;
+
     }
 
     public function runCheck(\Larawatch\Checks\BaseCheck $check): \Larawatch\Checks\CheckResult

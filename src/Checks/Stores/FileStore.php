@@ -6,6 +6,7 @@ use Exception;
 use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Arr;
 
 class FileStore 
@@ -44,15 +45,14 @@ class FileStore
     {
         $this->disk = Storage::disk($this->diskName);
     
-
-
-
-        if ($this->disk->exists($this->fullPath)) {
+        if ($this->disk->exists($this->fullPath)) 
+        {
             $existingData = json_decode($this->disk->get($this->fullPath),true);
             foreach ($checkResults->toArray() as $key => $data)
             {
                 foreach ($data as $key1 => $data1)
                 {
+
                     if (is_array($data1) && isset($data1[0]) && $data1[0] instanceof \Larawatch\Checks\CheckResult)
                     {
                         $existingData[$key1][] = $data1[0];
@@ -64,18 +64,28 @@ class FileStore
                     
                 }
             }
-            
-            $this->disk->write($this->fullPath, json_encode($existingData));
         }
-        else {
+        else 
+        {
             foreach ($checkResults->toArray() as $key => $data)
             {
-                $existingData[$key][] = $data;
-            }
+                foreach ($data as $key1 => $data1)
+                {
 
-            $this->disk->write($this->fullPath, json_encode($existingData));   
-            
+                    if (is_array($data1) && isset($data1[0]) && $data1[0] instanceof \Larawatch\Checks\CheckResult)
+                    {
+                        $existingData[$key1][] = $data1[0];
+                    }
+                    else
+                    {
+                        $existingData[$key1][] = ['status' => 'skipped'];
+                    }
+                    
+                }
+
+            }
         }
+        $this->disk->write($this->fullPath, json_encode($existingData));
     }
 
 }

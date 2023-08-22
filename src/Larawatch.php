@@ -294,18 +294,12 @@ class Larawatch
         return Cache::has($this->createExceptionString($data));
     }
 
-    /**
-     * @return string
-     */
-    private function createExceptionString(array $data)
+    private function createExceptionString(array $data): string
     {
         return 'larawatch.'.Str::slug($data['host'].'_'.$data['method'].'_'.$data['exception'].'_'.$data['line'].'_'.$data['file'].'_'.$data['class']);
     }
 
-    /**
-     * @return \GuzzleHttp\Promise\PromiseInterface|\Psr\Http\Message\ResponseInterface|null
-     */
-    private function logError($exception)
+    private function logError($exception): \GuzzleHttp\Promise\PromiseInterface|\Psr\Http\Message\ResponseInterface|null
     {
         return $this->client->report([
             'exception' => $exception,
@@ -318,6 +312,12 @@ class Larawatch
         return $this->client->sendRawData($destination, $data);
 
     }
+
+    public function sendFile(string $dataFilePath)
+    {
+        return $this->client->sendDataFile($dataFilePath);
+    }
+
 
     /**
      * @return array|null
