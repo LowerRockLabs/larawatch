@@ -41,7 +41,7 @@ return [
     /*
      * The base URL to use when sending reports.  Most functionality requires Larawatch endpoints
      */
-    'base_url' => env('LARAWATCH_BASE_URL') ?? 'https://www.larawatch.com/api/',
+    'base_url' => env('LARAWATCH_BASE_URL') ?? 'https://dev.larawatch.com/api/',
 
     /*
      * The unique project key, available via the Dashboard. Should be unique to a project
@@ -85,7 +85,7 @@ return [
         '*email*',
     ],
     // 'release' => trim(exec('git --git-dir ' . base_path('.git') . ' log --pretty="%h" -n1 HEAD')),
-    'server' => env('LARAWATCH_SERVER', 'https://www.larawatch.com/api/log'),
+    'server' => env('LARAWATCH_SERVER', 'https://dev.larawatch.com/api/log'),
     'verify_ssl' => env('LARAWATCH_VERIFY_SSL', true),
 
 

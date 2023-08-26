@@ -41,10 +41,11 @@ class FileStore
         $this->fullPath = rtrim($this->folderPath, '/').'/'.ltrim($this->fileName, '/');
     }
 
-    public function save(Collection $checkResults): void
+    public function save(Collection $checkResults): string
     {
         $this->disk = Storage::disk($this->diskName);
-    
+        Log::error('Tru File');
+
         if ($this->disk->exists($this->fullPath)) 
         {
             $existingData = json_decode($this->disk->get($this->fullPath),true);
@@ -86,6 +87,9 @@ class FileStore
             }
         }
         $this->disk->write($this->fullPath, json_encode($existingData));
+
+        return $this->fullPath;
+        
     }
 
 }

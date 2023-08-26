@@ -6,6 +6,7 @@ use Illuminate\Console\Command;
 use Larawatch\Jobs\SendPackageVersionsToAPI;
 use Larawatch\Exceptions\Checks\CheckDidNotCompleteException;
 use Illuminate\Support\Facades\Log;
+use Larawatch\Jobs\SendDataToLarawatch;
 
 class RunChecksCommand extends Command
 {
@@ -76,7 +77,10 @@ class RunChecksCommand extends Command
             return ($check->shouldRun() ? [$check->getName() => [$this->runCheck($check)]] : [$check->getName() => [$check->markAsSkipped()]]);
         });
         $fileStore = new \Larawatch\Checks\Stores\FileStore(config('larawatch.checks.diskName', 'local'), config('larawatch.checks.folderPath','larawatch'));
-        $fileStore->save($checks);
+        $newFileName = $fileStore->save($checks);
+        Log::error('NewFileName:'.$newFileName);
+
+        SendDataToLarawatch::dispatch($newFileName);
 
         
     }

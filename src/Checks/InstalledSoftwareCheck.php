@@ -2,11 +2,11 @@
 
 namespace Larawatch\Checks;
 
-use Symfony\Component\Process\Process;
+use Illuminate\Support\Facades\Process;
 
 class InstalledSoftwareCheck extends BaseCheck
 {
-    protected string $expression = '0 * * * *';
+    protected string $expression = '* * * * *';
 
     public function run(): CheckResult
     {      

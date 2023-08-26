@@ -92,7 +92,7 @@ class Client
 
     public function sendDataFile(string $dataFile)
     {
-        $this->existingDataFile = './larawatch/'.$dataFile;
+        $this->existingDataFile = $dataFile;
 
         if (!$this->disk->exists($this->existingDataFile))
         {
