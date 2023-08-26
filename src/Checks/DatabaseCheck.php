@@ -73,6 +73,9 @@ class DatabaseCheck extends BaseCheck
                 'connections' => $dbConnections,
                 'database_size' => $dbSize,
                 'sub_check_failed' => $this->subCheckFailed,
+                'project_key' => config('larawatch.project_key'),
+                'server_key' => config('larawatch.server_key')
+    
             ];
         }
         $result = CheckResult::make(started_at: $this->checkStartTime)
