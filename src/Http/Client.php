@@ -38,6 +38,34 @@ class Client
         $this->disk = Storage::disk('local');
     }
 
+    protected function getGuzzleHeadersToken(): array
+    {
+        return [
+            'Authorization' => 'Bearer ' . config('larawatch.destination_token'),
+            'User-Agent' => 'Larawatch-Package',
+            'project_key' => config('larawatch.project_key'),
+            'server_key' => config('lasrawatch.server_key'),
+        ];
+    }
+
+    protected function getGuzzleHeadersUser(): array
+    {
+        return [
+            'Authorization' => 'Bearer ' . $this->login,
+            'User-Agent' => 'Larawatch-Package',
+            'Content-Type' => 'application/json',
+            'Accept' => 'application/json',
+        ];
+    }
+
+    protected function getProjectKeys(): array
+    {
+        return [
+            'project_key' => config('larawatch.project_key'),
+            'server_key' => config('larawatch.server_key'),
+        ];
+    }
+
     /**
      * @param  array  $exception
      * @return \GuzzleHttp\Promise\PromiseInterface|\Psr\Http\Message\ResponseInterface|null
@@ -48,12 +76,7 @@ class Client
     {
         try {
             return $this->getGuzzleHttpClient()->request('POST', config('larawatch.server'), [
-                'headers' => [
-                    'Authorization' => 'Bearer '.$this->login,
-                    'Content-Type' => 'application/json',
-                    'Accept' => 'application/json',
-                    'User-Agent' => 'Larawatch-Package',
-                ],
+                'headers' => $this->getGuzzleHeadersUser(),
                 'json' => array_merge([
                     'project' => $this->project,
                     'additional' => [],
@@ -70,17 +93,9 @@ class Client
     public function sendRawData(string $destination, array $data)
     {
         try {
-            return $this->getGuzzleHttpClient()->request('POST', config('larawatch.base_url').$destination, [
-                'headers' => [
-                    'Authorization' => 'Bearer '.config('larawatch.destination_token'),
-                    'Content-Type' => 'application/json',
-                    'Accept' => 'application/json',
-                    'User-Agent' => 'Larawatch-Package',
-                ],
-                'json' => array_merge([
-                    'project_key' => config('larawatch.project_key'),
-                    'server_key' => config('larawatch.server_key'),
-                ], $data),
+            return $this->getGuzzleHttpClient()->request('POST', config('larawatch.base_url') . $destination, [
+                'headers' => $this->getGuzzleHeadersToken(),
+                'json' => array_merge($this->getProjectKeys(), $data),
                 'verify' => config('larawatch.verify_ssl'),
             ]);
         } catch (\GuzzleHttp\Exception\RequestException $e) {
@@ -94,43 +109,36 @@ class Client
     {
         $this->existingDataFile = $dataFile;
 
-        if (!$this->disk->exists($this->existingDataFile))
-        {
+        if (!$this->disk->exists($this->existingDataFile)) {
             return false;
-        }
-        else {
+        } else {
             try {
 
-                return $this->getGuzzleHttpClient()->request('POST', config('larawatch.base_url').'uploadfile', [
-                    'headers' => [
-                        'Authorization' => 'Bearer '.config('larawatch.destination_token'),
-                        'User-Agent' => 'Larawatch-Package',
-                        'project_key' => config('larawatch.project_key'),
-                        'server_key' => config('larawatch.server_key'),    
-                    ],
+                return $this->getGuzzleHttpClient()->request('POST', config('larawatch.base_url') . 'uploadfile', [
+                    'headers' => $this->getGuzzleHeadersToken(),
                     'multipart' => [
                         [
-                            'name'     => 'file',
+                            'name' => 'file',
                             'filename' => $dataFile,
                             'contents' => $this->disk->get($this->existingDataFile),
                         ],
                         [
                             'name' => "project_key",
-                            'contents' =>  config('larawatch.project_key'),
+                            'contents' => config('larawatch.project_key'),
                         ],
                         [
                             'name' => "server_key",
-                            'contents' =>  config('larawatch.server_key'),
+                            'contents' => config('larawatch.server_key'),
                         ],
 
                     ],
                     'verify' => config('larawatch.verify_ssl'),
                 ]);
             } catch (\GuzzleHttp\Exception\RequestException $e) {
-                Log::error('Error:'.serialize($e));
+                Log::error('Error:' . serialize($e));
                 return $e->getResponse();
             } catch (\Exception $e) {
-                Log::error('Error:'.serialize($e));
+                Log::error('Error:' . serialize($e));
                 return;
             }
         }
@@ -141,7 +149,7 @@ class Client
      */
     public function getGuzzleHttpClient()
     {
-        if (! isset($this->client)) {
+        if (!isset($this->client)) {
             $this->client = new \GuzzleHttp\Client([
                 'timeout' => 15,
             ]);

@@ -53,6 +53,8 @@ abstract class Task
 
     public function shouldMonitor(): bool
     {
+        return true;
+
         if (! isset($this->event->doNotMonitor)) {
             return true;
         }
@@ -62,11 +64,15 @@ abstract class Task
 
     public function isBeingMonitored(): bool
     {
+        return true;
+
         return ! is_null($this->monitoredScheduledTask);
     }
 
     public function isBeingMonitoredAtLarawatch(): bool
     {
+        return true;
+        
         if (! $this->isBeingMonitored()) {
             return false;
         }

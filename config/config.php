@@ -12,7 +12,7 @@ return [
     'checks' => [
         'diskName' => 'local',
         'folderPath' => 'larawatch',
-        
+        'storage' => 'database',
         'databases_active' => [],
         'databases_ignore' => ['pgsql'],
 

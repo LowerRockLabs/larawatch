@@ -76,11 +76,20 @@ class RunChecksCommand extends Command
         $checks = collect($checkList)->map(function ($check): array {
             return ($check->shouldRun() ? [$check->getName() => [$this->runCheck($check)]] : [$check->getName() => [$check->markAsSkipped()]]);
         });
-        $fileStore = new \Larawatch\Checks\Stores\FileStore(config('larawatch.checks.diskName', 'local'), config('larawatch.checks.folderPath','larawatch'));
-        $newFileName = $fileStore->save($checks);
-        Log::error('NewFileName:'.$newFileName);
 
-        SendDataToLarawatch::dispatch($newFileName);
+        if(config('larawatch.checks.storage') == 'file')
+        {
+            $fileStore = new \Larawatch\Checks\Stores\FileStore(config('larawatch.checks.diskName', 'local'), config('larawatch.checks.folderPath','larawatch'));
+            $newFileName = $fileStore->save($checks);
+            SendDataToLarawatch::dispatch($newFileName);
+            Log::error('NewFileName:'.$newFileName);
+        }
+        else if(config('larawatch.checks.storage') == 'database')
+        {
+            $dbStore = new \Larawatch\Checks\Stores\DatabaseStore();
+            $storedResults = $dbStore->save($checks);
+        }
+
 
         
     }

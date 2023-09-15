@@ -13,11 +13,11 @@ use Larawatch\Commands\ListCommand;
 use Larawatch\Commands\SendPackageDetailsCommand;
 use Larawatch\Commands\SyncCommand;
 use Larawatch\Commands\TestCommand;
-use Larawatch\EventHandlers\BackgroundCommandListener;
 use Larawatch\Events\SchedulerEvent;
 use Larawatch\Jobs\SendSlowQueryToAPI;
 use Larawatch\Models\MonitoredScheduledTask;
 use Larawatch\Models\MonitoredScheduledTaskLogItem;
+use Larawatch\Subscribers\CommandEventSubscriber;
 use Larawatch\Providers\EventServiceProvider;
 use Larawatch\Providers\ScheduleServiceProvider;
 use Monolog\Logger;
@@ -108,9 +108,10 @@ class LarawatchServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->register(EventServiceProvider::class);
-        $this->app->register(ScheduleServiceProvider::class);
+        //$this->app->register(ScheduleServiceProvider::class);
+       // Event::subscribe(\Larawatch\Subscribers\ScheduledEventSubscriber::class);
 
-        Event::listen(CommandStarting::class, BackgroundCommandListener::class);
+        Event::listen(CommandStarting::class, CommandEventSubscriber::class);
         $this->app->singleton(MonitoredScheduledTask::class);
         $this->app->singleton(MonitoredScheduledTaskLogItem::class);
         $this->mergeConfigFrom(__DIR__.'/../config/config.php', 'larawatch');
