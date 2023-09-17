@@ -10,8 +10,10 @@ class InstalledSoftwareCheck extends BaseCheck
 
     public function run(): CheckResult
     {      
+        $this->setStartTime(null);
 
-        $result = CheckResult::make(started_at: $this->checkStartTime)
+        $result = CheckResult::make()
+            ->startTime($this->getStartTime())
             ->resultData([
                 'installed_software' => $this->getInstalledSoftware(),
             ]);
@@ -27,10 +29,16 @@ class InstalledSoftwareCheck extends BaseCheck
     protected function getInstalledSoftware(): array
     {
         $method = $this->getRetrievalMethod();
-
-        $runProcess = Process::run($method);
-        $softwareList =  explode("\n", $runProcess->output());
         $newSoftwareList = [];
+
+        try {
+            $softwareList = explode("\n", ((Process::run($method))->output()));
+        } 
+        catch (\Exception $exception)
+        {
+            $this->addErrorMessage($exception->getMessage() ?? 'Unknown Error');
+            report($exception);
+        }
         foreach ($softwareList as $softwareListIndex => $installedSoftware)
         {
             $newArray = explode("||", preg_replace("/\s\s+/", "||", $installedSoftware)); 

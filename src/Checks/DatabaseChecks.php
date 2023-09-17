@@ -5,7 +5,7 @@ namespace Larawatch\Checks;
 use Illuminate\Database\ConnectionResolverInterface;
 use Larawatch\Support\DBInfo;
 
-class DatabaseCheck extends BaseCheck
+class DatabaseChecks extends BaseCheck
 {
     protected ?string $connectionName = null;
 
@@ -19,8 +19,10 @@ class DatabaseCheck extends BaseCheck
 
     public function run(): CheckResult
     {      
+        $this->setStartTime(null);
 
-        $result = CheckResult::make(started_at: $this->checkStartTime)
+        $result = CheckResult::make()
+            ->startTime($this->getStartTime())
             ->resultData([
                 'database_size' => $this->getDatabaseSizeInGb(),
                 'connections' => $this->getDatabaseConnections(),

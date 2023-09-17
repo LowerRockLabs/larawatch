@@ -17,6 +17,9 @@ class LarawatchCheck extends Model
     public $casts = [
         'result_data' => 'json',
         'check_data' => 'json',
+        'raw_data' => 'json',
+        'access_data' => 'json',
+        'error_messages' => 'json',
     ];
 
 

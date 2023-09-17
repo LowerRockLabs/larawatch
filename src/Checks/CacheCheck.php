@@ -22,9 +22,12 @@ class CacheCheck extends BaseCheck
 
     public function run(): CheckResult
     {
-        $driver = $this->driver ?? $this->defaultDriver();
+        $this->setStartTime(null);
 
-        $result = CheckResult::make(started_at: $this->checkStartTime)->resultData([
+        $driver = $this->driver ?? $this->defaultDriver();
+        $result = CheckResult::make()
+        ->startTime($this->getStartTime())
+        ->resultData([
             'driver' => $driver,
         ]);
 

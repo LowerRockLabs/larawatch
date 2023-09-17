@@ -2,22 +2,21 @@
 
 namespace Larawatch\Checks;
 
-use Carbon\CarbonInterface;
+use Larawatch\Traits\Core\{ProvidesAccessData, ProvidesCheckData, ProvidesErrorMessages, ProvidesResultData, ProvidesResultMessage, ProvidesResultStatus, ProvidesTimings};
 use Carbon\Carbon;
 
 class CheckResult
 {
-    public array $resultData = [];
-
-    public string $resultMessage = '';
-    
-    public string $resultStatus;
+    use ProvidesAccessData;
+    use ProvidesCheckData;
+    use ProvidesErrorMessages;
+    use ProvidesResultData;
+    use ProvidesResultMessage;
+    use ProvidesResultStatus;
+    use ProvidesTimings;
 
     public BaseCheck $check;
 
-    public ?CarbonInterface $ended_at;
-
-    public ?Carbon $started_at;
 
     public static function make(string $resultMessage = '', Carbon $started_at = null): self
     {
@@ -29,8 +28,8 @@ class CheckResult
         string $resultMessage = '',
         Carbon $started_at = null,
     ) {
-        $this->resultStatus = $resultStatus ?? 'ok';
-        $this->started_at = $started_at ?? Carbon::now();
+        $this->setResultStatus($resultStatus ?? 'ok');
+        $this->setStartTime($started_at ?? null);
     }
 
 
@@ -41,12 +40,8 @@ class CheckResult
         return $this;
     }
 
-    public function resultMessage(string $resultMessage): self
-    {
-        $this->resultMessage = $resultMessage;
 
-        return $this;
-    }
+
 
     public function getResultDetails(): array
     {
@@ -56,53 +51,48 @@ class CheckResult
             })->toArray();
             
     
-
-        return [$this->resultMessage, [...$resultDetails, ...[
-            'project_key' => config('larawatch.project_key'),
-            'server_key' => config('larawatch.server_key')
-           ]]];
+        return [$this->resultMessage, $resultDetails];
     }
+
 
     public function ok(string $resultMessage = ''): self
     {
-        $this->resultMessage = $resultMessage;
+        $this->setResultMessage($resultMessage);
+        $this->setResultStatus('ok');
 
-        $this->resultStatus = 'ok';
+        return $this;
+    }
+
+    public function pending(): self
+    {
+        $this->setResultMessage('');
+        $this->setResultStatus('pending');
+
+        return $this;
+    }
+
+    public function passed(string $resultMessage = ''): self
+    {
+        $this->setResultMessage($resultMessage);
+        $this->setResultStatus('passed');
 
         return $this;
     }
 
     public function warning(string $resultMessage = ''): self
     {
-        $this->resultMessage = $resultMessage;
+        $this->setResultMessage($resultMessage);
+        $this->setResultStatus('warning');
 
-        $this->resultStatus = 'warning';
 
         return $this;
     }
 
     public function failed(string $resultMessage = ''): self
     {
-        $this->resultMessage = $resultMessage;
-
-        $this->resultStatus = 'failed';
-
+        $this->setResultMessage($resultMessage);
+        $this->setResultStatus('failed');
         return $this;
     }
 
-    public function resultData(array $resultData): self
-    {
-        $this->resultData = [...$resultData, ...[
-            'project_key' => config('larawatch.project_key'),
-            'server_key' => config('larawatch.server_key')
-           ]];
-        return $this;
-    }
-
-    public function endedAt(CarbonInterface $carbon): self
-    {
-        $this->ended_at = $carbon;
-
-        return $this;
-    }
 }

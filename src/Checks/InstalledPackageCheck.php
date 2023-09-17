@@ -10,8 +10,10 @@ class InstalledPackageCheck extends BaseCheck
 
     public function run(): CheckResult
     {      
+        $this->setStartTime(null);
 
-        $result = CheckResult::make(started_at: $this->checkStartTime)
+        $result = CheckResult::make()
+            ->startTime($this->getStartTime())
             ->resultData([
                 'installed_packages' => $this->getInstalledPackages(),
             ]);

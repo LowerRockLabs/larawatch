@@ -15,11 +15,14 @@ return new class extends Migration
     {
         Schema::create('larawatch_checks', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->char('check_run_id', 36);
             $table->string('check_name');
+            $table->json('check_data')->nullable();
+            $table->json('access_data')->nullable();
             $table->json('result_data')->nullable();
             $table->text('result_message')->nullable();
+            $table->json('error_messages')->nullable();
             $table->string('result_status')->nullable();
-            $table->json('check_data')->nullable();
             $table->dateTime('started_at')->default(now())->nullable();
             $table->dateTime('finished_at')->nullable();
             $table->boolean('larawatch_dispatch_status')->default(false);

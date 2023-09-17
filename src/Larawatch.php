@@ -318,6 +318,11 @@ class Larawatch
         return $this->client->sendDataFile($dataFilePath);
     }
 
+    public function logCheckArray(string $destination, array $data)
+    {
+        return $this->client->sendRawData($destination, $data);
+
+    }
 
     /**
      * @return array|null

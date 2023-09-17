@@ -2,103 +2,52 @@
 
 namespace Larawatch;
 
-use Illuminate\Console\Events\CommandStarting;
-use Illuminate\Database\Events\QueryExecuted;
 use Illuminate\Foundation\Console\AboutCommand;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
-use Larawatch\Commands\RunChecksCommand;
-use Larawatch\Commands\ListCommand;
-use Larawatch\Commands\SendPackageDetailsCommand;
-use Larawatch\Commands\SyncCommand;
-use Larawatch\Commands\TestCommand;
-use Larawatch\Events\SchedulerEvent;
-use Larawatch\Jobs\SendSlowQueryToAPI;
-use Larawatch\Models\MonitoredScheduledTask;
-use Larawatch\Models\MonitoredScheduledTaskLogItem;
-use Larawatch\Subscribers\CommandEventSubscriber;
-use Larawatch\Providers\EventServiceProvider;
-use Larawatch\Providers\ScheduleServiceProvider;
-use Monolog\Logger;
+use Larawatch\Models\{MonitoredScheduledTask,MonitoredScheduledTaskLogItem};
+use Larawatch\Providers\{EventServiceProvider,ScheduleServiceProvider};
+use Larawatch\Traits\Provider\ProvidesProviderTraits;
 
 class LarawatchServiceProvider extends ServiceProvider
 {
+    use ProvidesProviderTraits;
+    
     /**
      * @return void
      */
     public function boot()
     {
+        // Setup About Command
+        AboutCommand::add('Larawatch', fn () => ['Version' => '1.0.0']);
 
-        /*
-         * Optional methods to load package assets
-         */
+        // Merge Config
         $this->mergeConfigFrom(
             __DIR__.'/../config/config.php', 'larawatch'
         );
 
-        $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
-
-        // $this->loadTranslationsFrom(__DIR__ . '/../resources/lang', 'laravel-advanced-authentication');
-        AboutCommand::add('Larawatch', fn () => ['Version' => '1.0.0']);
-
-        if (config('larawatch.slow_query.enabled')) {
-            DB::whenQueryingForLongerThan(config('larawatch.slow_query.threshold'), function ($connection, QueryExecuted $event) {
-                SendSlowQueryToAPI::dispatch($event);
-            });
-        }
-
+        // Setup Facade
         if (class_exists(\Illuminate\Foundation\AliasLoader::class)) {
             $loader = \Illuminate\Foundation\AliasLoader::getInstance();
             $loader->alias('larawatch', 'Larawatch\Facade');
         }
 
-        SchedulerEvent::macro('monitorName', function (string $monitorName) {
-            $this->monitorName = $monitorName;
+        // Load Routes if Enabled
+        if (config('larawatch.routes.enabled', false))
+        {
+            $this->loadRoutesFrom(__DIR__.'/../routes/web.php');    
+        }
 
-            return $this;
-        });
+        // Setup Slow Query Log If Enabled
+        if (config('larawatch.slow_query.enabled')) {
+            $this->setupSlowQueryLogger();
+        }
 
-        SchedulerEvent::macro('graceTimeInMinutes', function (int $graceTimeInMinutes) {
-            $this->graceTimeInMinutes = $graceTimeInMinutes;
+        // Add Scheduler Monitor Macros
+        $this->addSchedulerMacros();
 
-            return $this;
-        });
-
-        SchedulerEvent::macro('doNotMonitor', function (bool $bool = true) {
-            $this->doNotMonitor = $bool;
-
-            return $this;
-        });
-
-        SchedulerEvent::macro('storeOutputInDb', function () {
-            $this->storeOutputInDb = true;
-            $this->testUuid = '123475812';
-
-            /** @psalm-suppress UndefinedMethod */
-            $this->ensureOutputIsBeingCaptured();
-
-            return $this;
-        });
-
+        // Add Console Options
         if ($this->app->runningInConsole()) {
-
-            $this->commands([
-                RunChecksCommand::class,
-                ListCommand::class,
-                SyncCommand::class,
-                SendPackageDetailsCommand::class,
-                TestCommand::class,
-            ]);
-
-            $this->publishes([
-                __DIR__.'/../config/config.php' => config_path('larawatch.php'),
-            ], 'larawatch-config');
-
-            $this->publishes([
-                __DIR__.'/../database/migrations' => database_path('migrations'),
-            ], 'larawatch-migrations');
-
+            $this->returnConsoleOptions();
         }
     }
 
@@ -111,27 +60,20 @@ class LarawatchServiceProvider extends ServiceProvider
         //$this->app->register(ScheduleServiceProvider::class);
        // Event::subscribe(\Larawatch\Subscribers\ScheduledEventSubscriber::class);
 
-        Event::listen(CommandStarting::class, CommandEventSubscriber::class);
+        // Setup Command Listener
+        $this->setupCommandListener();
+
         $this->app->singleton(MonitoredScheduledTask::class);
         $this->app->singleton(MonitoredScheduledTaskLogItem::class);
+
         $this->mergeConfigFrom(__DIR__.'/../config/config.php', 'larawatch');
 
-        $this->app->singleton('larawatch', function ($app) {
-            return new Larawatch(new \Larawatch\Http\Client(
-                config('larawatch.destination_token', 'destination_token'),
-                config('larawatch.project_key', 'project_key')
-            ));
-        });
+        // Setup Larawatch Client
+        $this->setupLarawatchSingleton();
 
-        if ($this->app['log'] instanceof \Illuminate\Log\LogManager) {
-            $this->app['log']->extend('larawatch', function ($app, $config) {
-                $handler = new \Larawatch\Logger\LarawatchHandler(
-                    $app['larawatch']
-                );
-
-                return new Logger('larawatch', [$handler]);
-            });
-        }
+        // Setup Log Parsing
+        $this->setupLogParser();
+        
 
         //$this->app->register(EventServiceProvider::class);
     }

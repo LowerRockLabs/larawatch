@@ -8,7 +8,14 @@ class AppOptimizedCheck extends BaseCheck
 
     public function run(): CheckResult
     {
-        $result = CheckResult::make(started_at: $this->checkStartTime)
+        $this->setStartTime(null);
+
+        $result = CheckResult::make()
+            ->startTime($this->getStartTime())
+            ->accessData([
+                'project_key' => config('larawatch.project_key', []),
+                'server_key' => config('larawatch.server_key', []),
+            ])
             ->resultData([
                 'config_cached' => $this->checkConfigCache(),
                 'routes_cached' => $this->checkRouteCache(),

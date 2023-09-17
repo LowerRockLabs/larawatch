@@ -75,7 +75,7 @@ class Client
     public function report($exception)
     {
         try {
-            return $this->getGuzzleHttpClient()->request('POST', config('larawatch.server'), [
+            return $this->getGuzzleHttpClient()->request('POST', 'https://'.config('larawatch.bug_server').'/api/log', [
                 'headers' => $this->getGuzzleHeadersUser(),
                 'json' => array_merge([
                     'project' => $this->project,
@@ -104,6 +104,7 @@ class Client
             return;
         }
     }
+
 
     public function sendDataFile(string $dataFile)
     {

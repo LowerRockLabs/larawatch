@@ -5,7 +5,7 @@ namespace Larawatch\Events;
 use Illuminate\Console\Scheduling\Event;
 use Illuminate\Console\Scheduling\EventMutex;
 
-class SchedulerEvent extends Event
+class SlowQueryEvent extends Event
 {
     public string $lrl_id;
 

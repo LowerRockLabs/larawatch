@@ -4,10 +4,64 @@
 return [
 
     /*
+     * The base URL to use when sending reports.  Most functionality requires Larawatch endpoints
+     */
+    'base_url' => env('LARAWATCH_BASE_URL') ?? 'https://dev.larawatch.com/api/',
+
+    /*
+     * The unique project key, available via the Dashboard. Should be unique to a project
+     */
+    'project_key' => env('LARAWATCH_PROJECT_KEY') ?? 'unknown',
+
+    /*
+     * The unique server key, available via the Dashboard.  Should be unique to a server
+     */
+    'server_key' => env('LARAWATCH_SERVER_KEY') ?? 'unknown',
+
+    /*
+     * The unique NEL Logging key, available via the Dashboard.  Should be unique to your project, and will be publicly exposed.
+     */
+    'nel_key' => env('LARAWATCH_NEL_KEY') ?? 'unknown',
+
+    /*
+     * Your unique authentication token, available via the Dashboard.
+     */
+    'destination_token' => env('LARAWATCH_TOKEN'),
+
+    /*
+    * Server to submit bugs to
+    */
+    'bug_server' => env('LARAWATCH_BUG_SERVER', 'dev.larawatch.com'),
+
+    /*
+    * Server to submit other stuff to
+    */
+    'server' => env('LARAWATCH_SERVER', 'https://dev.larawatch.com/api/log'),
+
+    /*
+    * Whether to verify SSL (Recommended)
+    */
+    'verify_ssl' => env('LARAWATCH_VERIFY_SSL', true),
+
+
+    /*
      * The date format used for all dates displayed on the output of commands
      * provided by this package.
      */
     'date_format' => 'Y-m-d H:i:s',
+    
+
+    // Used if using routes to run checks
+    'routes' => [
+        // Enable Routes for Larawatch
+        'enable' => false,
+
+        // Route Prefix
+        'route_prefix' => 'larawatch',
+
+        // Route Name Prefix
+        'route_name_prefix' => 'larawatch',
+    ],
 
     'checks' => [
         'diskName' => 'local',
@@ -18,7 +72,26 @@ return [
 
         /* File System Checks */
         'local_filesystems' => [],
+
         'cloud_filesystems' => [],
+    ],
+
+    'checks_filesystems' => [
+
+        'local_filesystems' => [],
+
+        'local_filesystems_defaults' => [
+            'usage_checks' => true, 
+            'performance_checks' => true,
+        ],
+
+        'cloud_filesystems' => [],
+
+        'cloud_filesystems_defaults' => [
+            'usage_checks' => true, 
+            'performance_checks' => true,
+        ],
+
     ],
 
     'models' => [
@@ -38,26 +111,6 @@ return [
         'retry_job_for_minutes' => 10,
         'send_starting_ping' => true,
     ],
-    /*
-     * The base URL to use when sending reports.  Most functionality requires Larawatch endpoints
-     */
-    'base_url' => env('LARAWATCH_BASE_URL') ?? 'https://dev.larawatch.com/api/',
-
-    /*
-     * The unique project key, available via the Dashboard. Should be unique to a project
-     */
-    'project_key' => env('LARAWATCH_PROJECT_KEY') ?? 'unknown',
-
-    /*
-     * The unique server key, available via the Dashboard.  Should be unique to a server
-     */
-    'server_key' => env('LARAWATCH_SERVER_KEY'),
-
-    /*
-     * Your unique authentication token, available via the Dashboard.
-     */
-    'destination_token' => env('LARAWATCH_TOKEN'),
-
 
     'environments' => [
         'production',
@@ -85,8 +138,7 @@ return [
         '*email*',
     ],
     // 'release' => trim(exec('git --git-dir ' . base_path('.git') . ' log --pretty="%h" -n1 HEAD')),
-    'server' => env('LARAWATCH_SERVER', 'https://dev.larawatch.com/api/log'),
-    'verify_ssl' => env('LARAWATCH_VERIFY_SSL', true),
+
 
 
     /**

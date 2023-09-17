@@ -50,6 +50,7 @@ class DatabaseCheck extends BaseCheck
 
     public function run(): CheckResult
     {
+        $this->setStartTime(null);
 
         foreach ($this->connectionsToCheck as $connectionName => $connectionData)
         {
@@ -78,8 +79,10 @@ class DatabaseCheck extends BaseCheck
     
             ];
         }
-        $result = CheckResult::make(started_at: $this->checkStartTime)
-            ->resultData($this->temporaryResults); 
+        $result = CheckResult::make()
+            ->startTime($this->getStartTime())
+            ->resultData($this->temporaryResults)
+            ->errorMessages($this->getErrorMessages()); 
 
         return (!$this->subCheckFailed ? $result->ok() : $result->failed());
     }
@@ -88,17 +91,28 @@ class DatabaseCheck extends BaseCheck
     {
         if ((config('database.connections.'.$this->connectionName)['database'] == null))
         {
+            $this->addErrorMessage('No database connections set');
+
             $this->subCheckFailed = true;
             return false;
         }
         try {
             $dbConnection = DB::connection($this->connectionName)->select('SELECT DISTINCT table_schema from information_schema.tables');
-        } catch (PDOException $e) {
+        } catch (PDOException $exception) {
+            
+            $this->addErrorMessage($exception->getMessage() ?? 'Unknown Error');
             $this->subCheckFailed = true;
-        } catch (\Illuminate\Database\QueryException $e)  {
+
+        } catch (\Illuminate\Database\QueryException $exception)  {
+
+            $this->addErrorMessage($exception->getMessage() ?? 'Unknown Error');
             $this->subCheckFailed = true;
-        } catch(Exception $e) {
+
+        } catch(Exception $exception) {
+
+            $this->addErrorMessage($exception->getMessage() ?? 'Unknown Error');
             $this->subCheckFailed = true;
+            
         }
 
         if ($this->subCheckFailed)
@@ -129,6 +143,8 @@ class DatabaseCheck extends BaseCheck
         {
             return round((new DBInfo())->databaseSizeInMb($connection) / 1000, 2);
         }
+        $this->addErrorMessage('Could not get database size');
+
         $this->subCheckFailed = true;
 
         return 0.00;
@@ -139,18 +155,31 @@ class DatabaseCheck extends BaseCheck
     {
         try {
             $connection = $this->setupConnection();
-        } catch (\Illuminate\Database\QueryException $e)  {
+
+        } catch (\Illuminate\Database\QueryException $exception)  {
+
+            $this->addErrorMessage($exception->getMessage() ?? 'Unknown Error');
             $this->subCheckFailed = true;
-        } catch(Exception $e) {
+
+        } catch(Exception $exception) {
+
+            $this->addErrorMessage($exception->getMessage() ?? 'Unknown Error');
             $this->subCheckFailed = true;
+
         }
 
         try {
+
             $dbinMb = (new DBInfo())->databaseSizeInMb($connection);
-        } catch (\Illuminate\Database\QueryException $e)  {
+
+        } catch (\Illuminate\Database\QueryException $exception)  {
+            $this->addErrorMessage($exception->getMessage() ?? 'Unknown Error');
             $this->subCheckFailed = true;
-        } catch(Exception $e) {
+        } catch(Exception $exception) {
+            
+            $this->addErrorMessage($exception->getMessage() ?? 'Unknown Error');
             $this->subCheckFailed = true;
+
         }
         return $dbinMb;
     }
@@ -158,10 +187,16 @@ class DatabaseCheck extends BaseCheck
     protected function setupConnection()
     {
         try {
+
             $connection = app(ConnectionResolverInterface::class)->connection($this->connectionName); 
-        } catch (\Illuminate\Database\QueryException $e)  {
+
+        } catch (\Illuminate\Database\QueryException $exception)  {
+
+            $this->addErrorMessage($exception->getMessage() ?? 'Unknown Error');
             $this->subCheckFailed = true;
-        } catch(Exception $e) {
+
+        } catch(Exception $exception) {
+            $this->addErrorMessage($exception->getMessage() ?? 'Unknown Error');
             $this->subCheckFailed = true;
         }
         return $connection;

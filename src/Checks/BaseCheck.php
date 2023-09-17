@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Traits\Conditionable;
 use Illuminate\Support\Traits\Macroable;
 use Carbon\Carbon;
+use Larawatch\Traits\Core\{ProvidesErrorMessages, ProvidesTimings};
 
 abstract class BaseCheck
 {
@@ -17,6 +18,8 @@ abstract class BaseCheck
     use Conditionable {
         unless as doUnless;
     }
+    use ProvidesTimings;
+    use ProvidesErrorMessages;
 
     protected string $expression = '* * * * *';
 

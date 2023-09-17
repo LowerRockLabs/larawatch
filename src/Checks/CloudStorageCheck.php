@@ -11,10 +11,11 @@ class CloudStorageCheck extends BaseCheck
     protected array $cloudStorageSystemsToCheck = [];
     protected array $temporaryResults = [];
     public array $errorMessages = [];
+    public string $fileSystemName = '';
 
-    public function __construct(array $cloudStorageSystemsToCheck = [])
+    public function __construct(string $fileSystemName = '')
     {
-        $this->cloudStorageSystemsToCheck($cloudStorageSystemsToCheck);
+        $this->fileSystemName = $fileSystemName;
         if (!isset($this->checkStartTime))
         {
             $this->checkStartTime = \Carbon\Carbon::now();
@@ -22,13 +23,6 @@ class CloudStorageCheck extends BaseCheck
 
     }
 
-
-    public function cloudStorageSystemsToCheck(array $cloudStorageSystemsToCheck): self
-    {
-        $this->cloudStorageSystemsToCheck = $cloudStorageSystemsToCheck;
-
-        return $this;
-    }
 
     public function fileSystemName(string $fileSystemName): self
     {
@@ -40,45 +34,56 @@ class CloudStorageCheck extends BaseCheck
 
     public function run(): CheckResult
     {
+        $this->setStartTime(null);
+
         $success = true;
         $messages = [];
-        foreach ($this->cloudStorageSystemsToCheck as $cloudStorageName => $cloudStorageData)
-        {
-            $this->temporaryResults[] = $this->checkCloudStorageProvider($cloudStorageName);
 
+        $result = CheckResult::make()
+        ->startTime($this->getStartTime())
+        ->resultData($this->checkCloudStorageProvider())
+        ->errorMessages($this->getErrorMessages());
+
+        try {
+            throw new \Exception("Test");
         }
-
-        $result = CheckResult::make(started_at: $this->checkStartTime)
-            ->resultData($this->temporaryResults);
-        return ($success == true) ? $result->ok() : $result->failed()->resultMessage('Errors: '.implode(",", $this->errorMessages));
+        catch (\Exception $exception){
+            $this->addErrorMessage($exception->getMessage());
+            report($exception);
+        }
+        finally
+        {
+            $success = false;
+        }
+        return ($success == true) ? $result->ok() : $result->failed()->resultMessage('Errors: '.implode(",", $this->getErrorMessages()));
     }
 
-    protected function checkCloudStorageProvider($cloudStorageName): array
+    protected function checkCloudStorageProvider(): array
     {
-        $fileName = 'test-file-'.$cloudStorageName."-".date('Y-m-d H:i:s').Str::random(12).".txt";
+        $fileName = 'test-file-'.$this->fileSystemName."-".date('Y-m-d H:i:s').Str::random(12).".txt";
         $storedContents =  Str::random(64);
         try {
-            Storage::disk($cloudStorageName)->put($fileName,$storedContents);
+            Storage::disk($this->fileSystemName)->put($fileName,$storedContents);
 
-            $contents = Storage::disk($cloudStorageName)->get($fileName);
+            $contents = Storage::disk($this->fileSystemName)->get($fileName);
 
             //Storage::disk($cloudStorageName)->delete($fileName);
             return [
-                "cloudStorageName" => $cloudStorageName,
+                "cloudStorageName" => $this->fileSystemName,
                 "status" => ($contents === $storedContents ?? false),
             ];
         } catch (\Exception $exception) {
            // report($exception);
-           $this->errorMessages[] = $exception->getMessage();
+           $this->addErrorMessage($exception->getMessage());
            return [
-            "cloudStorageName" => $cloudStorageName,
+            "cloudStorageName" => $this->fileSystemName,
             "status" => false,
             "error_messages" => serialize($exception),
             ];
 
         }
         return [
-            "cloudStorageName" => $cloudStorageName,
+            "cloudStorageName" => $this->fileSystemName,
             "status" => true,
         ];
 

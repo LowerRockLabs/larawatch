@@ -17,9 +17,12 @@ class DebugModeCheck extends BaseCheck
 
     public function run(): CheckResult
     {
+        $this->setStartTime(null);
+
         $actual = config('app.debug');
 
-        $result = CheckResult::make(started_at: $this->checkStartTime)
+        $result = CheckResult::make()
+            ->startTime($this->getStartTime())
             ->resultData([
                 'actual' => $actual,
                 'expected' => $this->expected,
