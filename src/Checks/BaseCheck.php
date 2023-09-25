@@ -67,6 +67,11 @@ abstract class BaseCheck
         return Str::of($baseName)->beforeLast('Check');
     }
 
+    public function getTarget(): string
+    {
+        return '';
+    }
+
     public function setExpression(string $expression): static    
     {
         $this->expression = $expression;

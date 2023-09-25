@@ -34,6 +34,7 @@ class DatabaseStore
             'started_at' => $checkResult->getStartTime(),
             'finished_at' => $checkResult->getEndTime(),
             'result_status' => $checkResult->getResultStatus(),
+            'check_target' => $checkResult->getCheckTarget(),
         ]);
     }
 
@@ -71,6 +72,7 @@ class DatabaseStore
                         'check_data' => $data1[0]->getCheckData(), 
                         'access_data' => ['server_key' => $data1[0]->resultData['server_key'] ?? null, 'project_key' => $data1[0]->resultData['project_key'] ?? null],
                         'result_status' => 'skipped',
+                        'check_target' => $data1[0]->getCheckTarget(),
                         'started_at' => now(),
                         'finished_at' => now(),
                     ]);

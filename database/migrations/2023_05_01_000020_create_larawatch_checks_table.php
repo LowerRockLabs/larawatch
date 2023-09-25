@@ -16,7 +16,8 @@ return new class extends Migration
         Schema::create('larawatch_checks', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->char('check_run_id', 36);
-            $table->string('check_name');
+            $table->string('check_name')->nullable();
+            $table->string('check_target')->nullable();
             $table->json('check_data')->nullable();
             $table->json('access_data')->nullable();
             $table->json('result_data')->nullable();

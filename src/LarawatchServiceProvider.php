@@ -21,9 +21,8 @@ class LarawatchServiceProvider extends ServiceProvider
         AboutCommand::add('Larawatch', fn () => ['Version' => '1.0.0']);
 
         // Merge Config
-        $this->mergeConfigFrom(
-            __DIR__.'/../config/config.php', 'larawatch'
-        );
+        $this->mergeConfigFrom(__DIR__.'/../config/config.php', 'larawatch');
+
 
         // Setup Facade
         if (class_exists(\Illuminate\Foundation\AliasLoader::class)) {

@@ -92,6 +92,7 @@ trait RunsChecks
                 if ($check->shouldRun())
                 {
                     $dbStore->setCheckName($check->getName() ?? 'unknown');
+                    $dbStore->setCheckTarget($check->getTarget() ?? 'unknown');
 
                     try {
                         $dbStore->storeCheck($this->runCheck($check));

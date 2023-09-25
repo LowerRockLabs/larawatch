@@ -24,8 +24,18 @@ class LocalDiskSpaceCheck extends BaseCheck
         }
         $this->thresholds['free_percentage'] = ['warning' => 30, 'error' => 10];
         $this->thresholds['used_percentage'] = ['warning' => 70, 'error' => 90];
+        
     }
 
+    public function getName(): string
+    {
+        return class_basename(static::class);
+    }
+
+    public function getTarget(): string
+    {
+        return $this->fileSystemName;
+    }
 
 
 
@@ -39,6 +49,7 @@ class LocalDiskSpaceCheck extends BaseCheck
             'fileSystemName' => $this->fileSystemName ?? 'unknown', 
             'fileSystemPath' => $this->fileSystemPath ?? 'unknown',
         ])
+        ->checkTarget($this->fileSystemName)
         ->resultData([]);
 
         if (!isset($this->fileSystemName))

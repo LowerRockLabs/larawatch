@@ -31,6 +31,7 @@ class LocalDiskPerformanceCheck extends BaseCheck
             'fileSystemName' => $this->fileSystemName ?? 'unknown', 
             'fileSystemPath' => $this->fileSystemPath ?? 'unknown',
         ])
+        ->checkTarget($this->fileSystemName)
         ->resultData([]);
 
         if (!isset($this->fileSystemName))
@@ -77,4 +78,13 @@ class LocalDiskPerformanceCheck extends BaseCheck
         return round(5120/$difference,2);
     }
 
+    public function getName(): string
+    {
+        return class_basename(static::class);
+    }
+    
+    public function getTarget(): string
+    {
+        return $this->fileSystemName;
+    }
 }

@@ -8,7 +8,7 @@ trait ProvidesCheckData
     public string $check_name = '';
     protected array $check_data = [];
     protected string $check_run_id = '';
-    
+    protected string $check_target = '';
 
     public function checkName(string $check_name = ''): self
     {
@@ -61,5 +61,24 @@ trait ProvidesCheckData
     {
         return $this->check_run_id ?? '';
     }
+
+
+    public function checkTarget(string $check_target = ''): self
+    {
+        $this->setCheckTarget($check_target);
+
+        return $this;
+    }
+
+    public function setCheckTarget(string $check_target = ''): void
+    {
+        $this->check_target = $check_target;
+    }
+
+    public function getCheckTarget(): string
+    {
+        return $this->check_target ?? 'unknown';
+    }
+
 
 }
